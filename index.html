@@ -11,8 +11,8 @@
 :root{
   --red:#E60000; --red-dark:#B30000; --red-tint:#FCE9E9;
   --teal:#00898D; --teal-dark:#00696C; --teal-tint:#E4F2F2;
-  --orange:#FAA61A; --orange-tint:#FEF1DC;
-  --cyan:#00B5C6; --yellow:#FFCB05;
+  --orange:#FAA61A; --orange-dark:#9a6b06; --orange-tint:#FEF1DC;
+  --cyan:#00B5C6;
   --ink:#15191B; --ink-2:#414a4e; --muted:#727a80;
   --line:rgba(120,130,135,.16); --card:#ffffff;
   --sans:"Poppins","Segoe UI",system-ui,-apple-system,Helvetica,Arial,sans-serif;
@@ -21,7 +21,7 @@
 body{font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.45;
   padding:30px 16px 64px;background:#f4f5f7;min-height:100vh}
 
-/* ===== Liquid glass background (clean & subtle) ===== */
+/* ===== clean liquid-glass background ===== */
 .bg{position:fixed;inset:0;z-index:-2;overflow:hidden;background:linear-gradient(160deg,#f7f8fa 0%,#f1f3f5 100%)}
 .layer{position:absolute;inset:-14%;will-change:transform}
 .blob{position:absolute;border-radius:50%;filter:blur(100px);will-change:transform}
@@ -32,105 +32,98 @@ body{font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased
 @keyframes fl2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-2.5vw,-1.5vw) scale(1.05)}}
 @keyframes fl3{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-2vw,1.5vw) scale(1.08)}}
 
-/* ===== Glass app shell ===== */
 .app{position:relative;max-width:940px;margin:0 auto;border-radius:28px;overflow:hidden;isolation:isolate;
   background:rgba(255,255,255,.76);
   -webkit-backdrop-filter:blur(20px) saturate(115%);backdrop-filter:blur(20px) saturate(115%);
   border:1px solid rgba(255,255,255,.75);
   box-shadow:0 10px 40px rgba(20,30,40,.13),0 2px 8px rgba(20,30,40,.05),inset 0 1px 0 rgba(255,255,255,.8)}
 .app::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
-  background:radial-gradient(460px circle at var(--hx,75%) var(--hy,0%),rgba(255,255,255,.4),transparent 42%);
-  transition:background .18s ease}
+  background:radial-gradient(460px circle at var(--hx,75%) var(--hy,0%),rgba(255,255,255,.4),transparent 42%);transition:background .18s ease}
 
-/* top bar */
 .bar{display:flex;align-items:center;gap:14px;padding:18px 26px;border-bottom:1px solid var(--line)}
 .logo{height:34px;width:auto;display:block;flex:0 0 auto}
 .switch{margin-left:auto;display:inline-flex;background:rgba(120,130,135,.12);border-radius:999px;padding:4px;border:1px solid rgba(255,255,255,.4)}
-.switch button{border:none;background:transparent;font-family:inherit;font-size:13.5px;font-weight:600;
-  color:var(--muted);padding:9px 18px;border-radius:999px;cursor:pointer;transition:.2s;white-space:nowrap}
+.switch button{border:none;background:transparent;font-family:inherit;font-size:13.5px;font-weight:600;color:var(--muted);padding:9px 18px;border-radius:999px;cursor:pointer;transition:.2s;white-space:nowrap}
 .switch button.on{background:var(--red);color:#fff;box-shadow:0 6px 16px rgba(230,0,0,.28)}
 
-.stage{padding:24px 26px 26px}
+.stage{padding:22px 26px 26px}
 .mode{display:none}.mode.show{display:block;animation:fade .45s ease}
 @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 
-/* ===== Readout "screen" ===== */
-.screen{background:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.6);border-radius:18px;padding:20px 22px;position:relative;
+/* ===== readout tile (collapsible, headline always visible) ===== */
+.screen{background:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.6);border-radius:18px;padding:18px 20px;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 6px 22px rgba(20,30,40,.06)}
-.screen .yr{display:flex;align-items:center;gap:11px}
-.screen .yr h2,.screen .yr .h2{font-size:30px;font-weight:800;letter-spacing:-.5px}
-.shead{display:flex;align-items:center;justify-content:space-between;width:100%;background:none;border:none;font-family:inherit;color:inherit;cursor:pointer;padding:0;text-align:left}
-.shead:hover .chev{color:var(--ink)}
-.chev{width:20px;height:20px;color:var(--muted);transition:transform .3s,color .2s;flex:0 0 auto}
-.shead.collapsed .chev{transform:rotate(-90deg)}
-.sbody{overflow:hidden;max-height:420px;opacity:1;margin-top:12px;transition:max-height .42s ease,opacity .3s ease,margin-top .3s ease}
-.sbody.collapsed{max-height:0;opacity:0;margin-top:0}
+.shead{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;width:100%;background:none;border:none;font-family:inherit;color:inherit;cursor:pointer;padding:0;text-align:left}
+.sh-left{display:flex;flex-direction:column;gap:7px;min-width:0}
+.yr{display:flex;align-items:center;gap:11px}
+.yr .h2{font-size:27px;font-weight:800;letter-spacing:-.5px}
 .pill{font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;padding:4px 10px;border-radius:7px}
 .pill.ist{background:rgba(90,100,105,.15);color:#54606a}
 .pill.plan{background:var(--orange-tint);color:#9a6b06}
-.big{display:flex;align-items:baseline;gap:12px;margin-top:8px;flex-wrap:wrap}
-.big .num{font-size:46px;font-weight:800;letter-spacing:-1.2px;line-height:1;font-variant-numeric:tabular-nums;transition:color .3s}
-.big .word{font-size:15px;font-weight:700;padding:5px 12px;border-radius:8px;transition:.3s}
+.big{display:flex;align-items:baseline;gap:11px;flex-wrap:wrap}
+.big .num{font-size:42px;font-weight:800;letter-spacing:-1.1px;line-height:1;font-variant-numeric:tabular-nums;transition:color .3s}
+.big .word{font-size:14.5px;font-weight:700;padding:5px 12px;border-radius:8px;transition:.3s}
 .is-profit .num{color:var(--teal-dark)} .is-profit .word{background:var(--teal-tint);color:var(--teal-dark)}
 .is-loss .num{color:var(--red)} .is-loss .word{background:var(--red-tint);color:var(--red-dark)}
-.insight{margin-top:11px;font-size:14.5px;color:var(--ink-2);font-weight:500;max-width:640px;min-height:21px}
-
-.brk{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.more{flex:0 0 auto;display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;color:var(--ink-2);
+  background:rgba(255,255,255,.7);border:1px solid var(--line);border-radius:999px;padding:8px 14px;transition:.2s;margin-top:2px}
+.shead:hover .more{background:#fff;border-color:#c4cace;color:var(--ink)}
+.more .chev{width:14px;height:14px;transition:transform .3s}
+.shead[aria-expanded="true"] .more .chev{transform:rotate(180deg)}
+.sbody{overflow:hidden;max-height:0;opacity:0;margin-top:0;transition:max-height .42s ease,opacity .3s ease,margin-top .3s ease}
+.sbody.open{max-height:260px;opacity:1;margin-top:15px}
+.insight{font-size:14.5px;color:var(--ink-2);font-weight:500;max-width:640px}
+.brk{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}
 .brk .chip{background:rgba(255,255,255,.62);border:1px solid var(--line);border-radius:11px;padding:8px 13px;font-size:12px;font-weight:500;color:var(--muted)}
 .brk .chip b{display:block;font-size:14.5px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;margin-top:1px}
-.brk .chip.acc-t b{color:var(--teal-dark)} .brk .chip.acc-o b{color:#b97d08} .brk .chip.acc-r b{color:var(--red)}
+.brk .chip.acc-t b{color:var(--teal-dark)} .brk .chip.acc-o b{color:#b97d08}
 
-/* chart */
-.chart-host{position:relative;margin-top:8px}
+/* ===== legend ===== */
+.legend{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px;margin:16px 2px 2px;font-size:12px;font-weight:600;color:var(--ink-2)}
+.legend .lg{display:inline-flex;align-items:center;gap:8px}
+.legend .sw-res{width:24px;height:4px;border-radius:3px;background:linear-gradient(90deg,var(--teal) 0 50%,var(--red) 50% 100%)}
+.legend .sw-ebit{width:24px;height:0;border-top:2px dashed var(--orange-dark)}
+.legend .sw-foe{width:14px;height:13px;border-radius:3px;background:rgba(250,166,26,.28);border:1px solid rgba(250,166,26,.5)}
+.lg-tg{display:inline-flex;align-items:center;gap:10px;background:rgba(255,255,255,.7);border:1px solid var(--line);border-radius:999px;padding:6px 14px 6px 7px;cursor:pointer;font-family:inherit;font-size:12px;font-weight:600;color:var(--ink-2);transition:.2s}
+.lg-tg:hover{background:#fff;border-color:#c4cace;color:var(--ink)}
+.lg-tg .sw{position:relative;width:34px;height:20px;border-radius:999px;background:#cdd2d6;transition:.2s;flex:0 0 auto}
+.lg-tg .sw::after{content:"";position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.lg-tg[aria-checked="true"] .sw{background:var(--teal)}
+.lg-tg[aria-checked="true"] .sw::after{left:17px}
+.lg-tg .lgrp{display:inline-flex;align-items:center;gap:7px}
+.lg-tg[aria-checked="false"] .lgrp{opacity:.45}
+.legend.off .lg-ek{opacity:.38}
+.lg-eq{margin:9px 2px 2px;font-size:12.5px;font-weight:600;color:var(--muted);transition:opacity .3s}
+.lg-eq b{color:var(--ink-2);font-weight:700}
+
+/* ===== chart ===== */
+.chart-host{position:relative;margin-top:6px}
 svg.chart{width:100%;height:auto;display:block;overflow:visible;font-family:var(--sans)}
 .htip{position:absolute;pointer-events:none;opacity:0;transition:opacity .12s;background:rgba(21,25,27,.92);
-  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);color:#fff;border-radius:11px;padding:11px 13px;font-size:12px;
-  min-width:158px;z-index:30;box-shadow:0 12px 30px rgba(0,0,0,.3)}
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);color:#fff;border-radius:11px;padding:11px 13px;font-size:12px;min-width:150px;z-index:30;box-shadow:0 12px 30px rgba(0,0,0,.3)}
 .htip.on{opacity:1}
 .htip .h{font-weight:700;font-size:13px;display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:7px;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,.16)}
 .htip .h .b{font-size:9.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;padding:2px 7px;border-radius:5px;background:rgba(255,255,255,.18)}
 .htip .r{display:flex;justify-content:space-between;gap:12px;margin:4px 0}
 .htip .r span:first-child{color:rgba(255,255,255,.8)} .htip .r span:last-child{font-weight:700;font-variant-numeric:tabular-nums}
 
+/* ===== clickable timeline ===== */
+.timeline{position:relative;height:30px;margin-top:8px}
+.tl-year{position:absolute;top:0;transform:translateX(-50%);border:none;background:none;font-family:inherit;font-size:12.5px;font-weight:600;color:var(--muted);cursor:pointer;padding:5px 9px;border-radius:8px;transition:.15s;white-space:nowrap}
+.tl-year:hover{color:var(--ink);background:rgba(120,130,135,.12)}
+.tl-year.cur{color:#fff;background:var(--red);font-weight:700;box-shadow:0 5px 14px rgba(230,0,0,.28)}
+.tl-hint{text-align:center;font-size:11.5px;color:var(--muted);margin-top:14px;font-weight:500}
+.tl-hint b{color:var(--ink-2);font-weight:600}
+
 /* 100€ bar */
 .euro{margin-top:16px}
 .euro .cap{font-size:12.5px;font-weight:600;color:var(--muted);margin-bottom:7px;display:flex;justify-content:space-between}
-.ebar{display:flex;height:54px;border-radius:13px;overflow:hidden;box-shadow:inset 0 0 0 1px var(--line),0 4px 14px rgba(20,30,40,.08)}
-.ebar .seg{display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:15px;
-  transition:flex-grow .55s cubic-bezier(.4,0,.2,1);white-space:nowrap;overflow:hidden}
+.ebar{display:flex;height:52px;border-radius:13px;overflow:hidden;box-shadow:inset 0 0 0 1px var(--line),0 4px 14px rgba(20,30,40,.08)}
+.ebar .seg{display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:15px;transition:flex-grow .55s cubic-bezier(.4,0,.2,1);white-space:nowrap;overflow:hidden}
 .ebar .pr{background:linear-gradient(90deg,#aab0b5,#9aa1a6)} .ebar .dg{background:linear-gradient(90deg,#00B5C6,#00898D)}
 
-/* controls */
-.controls{display:flex;align-items:center;gap:16px;margin-top:22px}
-.play{width:48px;height:48px;border-radius:50%;border:none;background:var(--red);color:#fff;cursor:pointer;flex:0 0 auto;
-  display:grid;place-items:center;box-shadow:0 8px 22px rgba(230,0,0,.32);transition:transform .15s,box-shadow .2s}
-.play:hover{transform:scale(1.06);box-shadow:0 10px 28px rgba(230,0,0,.4)} .play:active{transform:scale(.95)}
-.play svg{width:20px;height:20px}
-.scrub{flex:1;position:relative;padding:16px 8px 2px}
-.track{position:relative;height:6px;border-radius:6px;background:rgba(120,130,135,.22);cursor:pointer}
-.track .ist{position:absolute;top:0;height:100%;left:0;border-radius:6px 0 0 6px;background:rgba(120,130,135,.18)}
-.track .fill{position:absolute;left:0;top:0;height:100%;border-radius:6px;background:var(--red);width:0;transition:width .25s}
-.tickdot{position:absolute;top:50%;width:9px;height:9px;border-radius:50%;background:#fff;border:2px solid #c2c8cc;
-  transform:translate(-50%,-50%);transition:border-color .25s,background .25s;pointer-events:none;z-index:1}
-.tickdot.done{border-color:var(--red)} .tickdot.cur{background:var(--red);border-color:var(--red)}
-.knob{position:absolute;top:50%;width:22px;height:22px;border-radius:50%;background:#fff;border:3px solid var(--red);
-  transform:translate(-50%,-50%);box-shadow:0 4px 12px rgba(0,0,0,.2);cursor:grab;transition:left .25s;touch-action:none;z-index:2}
-.knob:active{cursor:grabbing}
-.ticks{display:flex;justify-content:space-between;margin-top:12px}
-.ticks button{border:none;background:none;font-family:inherit;font-size:12.5px;font-weight:600;color:var(--muted);cursor:pointer;padding:2px 4px;border-radius:6px;transition:.15s}
-.ticks button.cur{color:var(--red);font-weight:800} .ticks button:hover{color:var(--ink)}
-
-/* reveal */
-.rev{display:flex;align-items:center;gap:10px;margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
-.tg{position:relative;width:42px;height:24px;border-radius:999px;background:rgba(120,130,135,.35);cursor:pointer;transition:.2s;flex:0 0 auto;border:none}
-.tg::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 2px 5px rgba(0,0,0,.2)}
-.tg.on{background:var(--teal)} .tg.on::after{left:21px}
-.rev label{font-size:13.5px;font-weight:600;color:var(--ink-2);cursor:pointer}
-.rev .hint{font-size:12px;color:var(--muted);margin-left:auto;text-align:right}
-
 /* callout */
-.callout{display:flex;gap:13px;align-items:flex-start;margin-top:20px;background:rgba(255,255,255,.55);
-  border:1px solid var(--line);border-left:4px solid var(--orange);border-radius:14px;padding:15px 17px}
+.callout{display:flex;gap:13px;align-items:flex-start;margin-top:22px;background:rgba(255,255,255,.55);border:1px solid var(--line);border-left:4px solid var(--orange);border-radius:14px;padding:15px 17px}
 .callout .ic{flex:0 0 auto;width:30px;height:30px;border-radius:9px;background:var(--orange-tint);display:grid;place-items:center;font-size:16px}
 .callout .t{font-size:11px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:#b97d08;margin-bottom:3px}
 .callout p{font-size:14px;color:var(--ink-2);font-weight:500;line-height:1.55}
@@ -146,7 +139,7 @@ svg.chart{width:100%;height:auto;display:block;overflow:visible;font-family:var(
 
 .foot{padding:16px 26px 22px;border-top:1px solid var(--line);font-size:11.5px;color:var(--muted);line-height:1.6}
 .foot b{color:var(--ink-2);font-weight:600}
-@media(max-width:560px){.big .num{font-size:38px}.screen .yr h2{font-size:25px}.switch button{padding:8px 13px;font-size:12.5px}.stage{padding:18px 16px 20px}.bar{padding:14px 16px}}
+@media(max-width:560px){.big .num{font-size:34px}.yr .h2{font-size:23px}.switch button{padding:8px 13px;font-size:12.5px}.stage{padding:18px 14px 20px}.bar{padding:14px 16px}.tl-year{font-size:11px;padding:4px 5px}}
 </style>
 </head>
 <body>
@@ -169,40 +162,39 @@ svg.chart{width:100%;height:auto;display:block;overflow:visible;font-family:var(
     <!-- ===== ERGEBNIS ===== -->
     <div class="mode show" id="mode-erg">
       <div class="screen">
-        <button class="shead" id="e_shead" aria-expanded="true">
-          <span class="yr"><span class="h2" id="e_year">2029</span><span class="pill plan" id="e_pill">Plan</span></span>
-          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        <button class="shead" id="e_shead" aria-expanded="false">
+          <span class="sh-left">
+            <span class="yr"><span class="h2" id="e_year">2029</span><span class="pill plan" id="e_pill">Plan</span></span>
+            <span class="big" id="e_big"><span class="num" id="e_num">+4,2</span><span class="word" id="e_word">Mio € Gewinn</span></span>
+          </span>
+          <span class="more"><span id="e_moretxt">Details</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span>
         </button>
         <div class="sbody" id="e_body">
-          <div class="big" id="e_big"><span class="num" id="e_num">+4,2</span><span class="word" id="e_word">Mio € Gewinn</span></div>
           <div class="insight" id="e_ins"></div>
           <div class="brk" id="e_brk">
-            <div class="chip">EBT (unterm Strich)<b id="e_ebt"></b></div>
-            <div class="chip acc-t">EBIT (aus eigener Kraft)<b id="e_ebit"></b></div>
+            <div class="chip">Ergebnis · EBT (mit Förderungen)<b id="e_ebt"></b></div>
+            <div class="chip acc-t">Aus eigener Kraft (ohne Förderungen)<b id="e_ebit"></b></div>
             <div class="chip acc-o">Förderungen<b id="e_foe"></b></div>
-            <div class="chip">EBITDA (vor Abschr.)<b id="e_ebitda"></b></div>
+            <div class="chip">EBITDA (operativ)<b id="e_ebitda"></b></div>
           </div>
         </div>
       </div>
 
+      <div class="legend" id="e_legend">
+        <span class="lg"><span class="sw-res"></span>Ergebnis unterm Strich · EBT (mit Förderungen)</span>
+        <span class="lg lg-ek"><span class="sw-ebit"></span>Aus eigener Kraft (ohne Förderungen)</span>
+        <span class="lg lg-ek"><span class="sw-foe"></span>Förderungen</span>
+        <button class="lg-tg" id="e_tg" role="switch" aria-checked="true" title="Linie und Band ohne Förderungen ein- oder ausblenden">
+          <span class="sw"></span>ohne Förderungen vergleichen
+        </button>
+      </div>
+      <div class="lg-eq" id="e_eq">Ergebnis (EBT) = <b>Aus eigener Kraft</b> &nbsp;+&nbsp; <b>Förderungen</b></div>
+
       <div class="chart-host">
-        <svg class="chart" id="svgErg" viewBox="0 0 920 400" aria-label="EBT-Verlauf"></svg>
+        <svg class="chart" id="svgErg" viewBox="0 0 920 400" aria-label="Ergebnisverlauf"></svg>
         <div class="htip" id="e_htip"></div>
       </div>
-
-      <div class="controls">
-        <button class="play" id="e_play" aria-label="Abspielen"></button>
-        <div class="scrub" id="e_scrub">
-          <div class="track" id="e_track"><div class="ist" id="e_ist"></div><div class="fill" id="e_fill"></div><div class="knob" id="e_knob"></div></div>
-          <div class="ticks" id="e_ticks"></div>
-        </div>
-      </div>
-
-      <div class="rev">
-        <button class="tg" id="e_tg" role="switch" aria-checked="false"></button>
-        <label for="e_tg">Linie „aus eigener Kraft" einblenden (EBIT ohne Förderungen)</label>
-        <span class="hint" id="e_revhint">zeigt, was die Förderungen tragen</span>
-      </div>
+      <div class="timeline" id="e_tl"></div>
 
       <div class="callout">
         <div class="ic">💡</div>
@@ -211,23 +203,24 @@ svg.chart{width:100%;height:auto;display:block;overflow:visible;font-family:var(
       </div>
 
       <details class="defs"><summary>Was bedeuten diese Begriffe?</summary>
-        <dl><dt>EBT</dt><dd>Ergebnis vor Steuern. Was am Ende „unterm Strich" übrig bleibt (Gewinn oder Verlust), inkl. Förderungen.</dd>
-        <dt>EBIT</dt><dd>Betriebsergebnis aus eigener Kraft, also vor Förderungen. Zeigt, ob sich das laufende Geschäft selbst trägt.</dd>
-        <dt>EBITDA</dt><dd>Ergebnis vor Zinsen, Steuern und Abschreibungen. Ein Maß für die operative Ertragskraft.</dd>
-        <dt>Förderungen</dt><dd>Öffentliche Zuschüsse (u. a. Presseförderung), die das Ergebnis zusätzlich stützen.</dd></dl>
+        <dl><dt>EBT</dt><dd>Ergebnis vor Steuern. Was am Ende „unterm Strich" übrig bleibt (Gewinn oder Verlust), inklusive Förderungen.</dd>
+        <dt>Aus eigener Kraft</dt><dd>Das Ergebnis ohne die öffentlichen Förderungen (EBT minus Förderungen). Zeigt, ob sich das Geschäft selbst trägt.</dd>
+        <dt>Förderungen</dt><dd>Öffentliche Zuschüsse (u. a. Presseförderung). Die orange Fläche zwischen den beiden Linien.</dd>
+        <dt>EBITDA</dt><dd>Operatives Ergebnis vor Zinsen, Steuern und Abschreibungen. Ein Maß für die operative Ertragskraft.</dd></dl>
       </details>
     </div>
 
     <!-- ===== PRINT & DIGITAL ===== -->
     <div class="mode" id="mode-mix">
       <div class="screen">
-        <button class="shead" id="m_shead" aria-expanded="true">
-          <span class="yr"><span class="h2" id="m_year">2029</span><span class="pill plan" id="m_pill">Plan</span></span>
-          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        <button class="shead" id="m_shead" aria-expanded="false">
+          <span class="sh-left">
+            <span class="yr"><span class="h2" id="m_year">2029</span><span class="pill plan" id="m_pill">Plan</span></span>
+            <span class="big"><span class="num" id="m_num" style="color:var(--teal-dark)">15 €</span><span class="word" style="background:var(--teal-tint);color:var(--teal-dark)">von 100 € sind digital</span></span>
+          </span>
+          <span class="more"><span id="m_moretxt">Details</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span>
         </button>
         <div class="sbody" id="m_body">
-          <div class="big"><span class="num" id="m_num" style="color:var(--teal-dark)">15 €</span>
-            <span class="word" style="background:var(--teal-tint);color:var(--teal-dark)">von 100 € sind digital</span></div>
           <div class="insight" id="m_ins"></div>
           <div class="brk" id="m_brk">
             <div class="chip">Print-Erlös<b id="m_pr"></b></div>
@@ -246,19 +239,12 @@ svg.chart{width:100%;height:auto;display:block;overflow:visible;font-family:var(
         <svg class="chart" id="svgMix" viewBox="0 0 920 190" aria-label="Digital-Anteil-Verlauf"></svg>
         <div class="htip" id="m_htip"></div>
       </div>
-
-      <div class="controls">
-        <button class="play" id="m_play" aria-label="Abspielen"></button>
-        <div class="scrub" id="m_scrub">
-          <div class="track" id="m_track"><div class="ist" id="m_ist"></div><div class="fill" id="m_fill" style="background:var(--teal)"></div><div class="knob" id="m_knob" style="border-color:var(--teal)"></div></div>
-          <div class="ticks" id="m_ticks"></div>
-        </div>
-      </div>
+      <div class="timeline" id="m_tl"></div>
 
       <div class="callout" style="border-left-color:var(--teal)">
         <div class="ic" style="background:var(--teal-tint)">💡</div>
         <div><div class="t" style="color:var(--teal-dark)">Erkenntnis</div>
-        <p>Digital wächst kräftig: von 4,3 auf <b>10,3 Mio €</b> (rund <b>×2,4</b>). Doch Print verliert im selben Zeitraum etwa <b>20 Mio €</b> — Digital fängt davon nur rund <b>30 %</b> auf. 2029 ist erst <b>jeder 7. Euro</b> digital; Print bleibt mit 85 % das Fundament.</p></div>
+        <p>Digital wächst kräftig: von 4,3 auf <b>10,3 Mio €</b> (rund <b>×2,4</b>). Doch Print verliert im selben Zeitraum etwa <b>20 Mio €</b>. Digital fängt davon nur rund <b>30 %</b> auf. 2029 ist erst <b>jeder 7. Euro</b> digital; Print bleibt mit 85 % das Fundament.</p></div>
       </div>
 
       <details class="defs"><summary>Was bedeuten diese Begriffe?</summary>
@@ -272,7 +258,6 @@ svg.chart{width:100%;height:auto;display:block;overflow:visible;font-family:var(
 </div>
 
 <script>
-/* ---------- Data ---------- */
 const D=[
  {y:'2022',plan:false,ebt:2.47,ebit:1.33,foe:1.23,ebitda:4.42,print:78.86,dig:4.33},
  {y:'2023',plan:false,ebt:-0.14,ebit:-0.76,foe:1.05,ebitda:2.40,print:71.68,dig:5.55},
@@ -285,28 +270,25 @@ const D=[
 ];
 D.forEach(d=>{d.tot=d.print+d.dig; d.pD=d.dig/d.tot*100; d.pP=d.print/d.tot*100;});
 const N=D.length, LAST=N-1, FCB=4;
-const insErg=["Solider Start mit klarem Gewinn — auch operativ schwarze Zahlen.","Knapp im Minus. Operativ rutscht das Geschäft erstmals in die roten Zahlen.","Wieder im Plus, getragen vor allem von höheren Förderungen.","Der Tiefpunkt der Reihe: das schwächste Jahr, operativ wie unterm Strich.","Die Wende beginnt — zurück ins Plus durch Kostendisziplin und Förderungen.","Ergebnis stabil im Plus, operativ noch leicht negativ.","Durchbruch: erstmals seit 2022 trägt sich das laufende Geschäft wieder selbst.","Bestwert der Reihe: Gewinn aus eigener Kraft plus Förderungen obendrauf."];
-const insMix=["Fast reines Print-Geschäft: Digital trägt erst 5 € von 100 € bei.","Digital zieht an, bleibt aber ein kleiner Teil des Werbeerlöses.","Digital wächst weiter, Print gibt langsam nach.","Jeder 11. Euro ist digital — die Verschiebung nimmt Fahrt auf.","Digital-Anteil rund jeder 10. Euro; Print bleibt klar das Fundament.","Digital springt auf 12 % — der stärkste Sprung der Reihe.","Digital nähert sich jedem 7. Euro, Print hält die Mehrheit.","Höchster Digital-Anteil: 15 € von 100 €. Print bleibt mit 85 % das Fundament."];
+const insErg=["Solider Start: Gewinn auch ohne Förderungen.","Knapp im Minus. Ohne Förderungen erstmals in den roten Zahlen.","Wieder im Plus, getragen allein von den Förderungen.","Der Tiefpunkt der Reihe, mit und ohne Förderungen.","Die Wende beginnt: zurück ins Plus, noch klar von Förderungen getragen.","Stabil im Plus, ohne Förderungen aber weiter negativ.","Deutlicher Gewinn unterm Strich, ohne Förderungen nahe der Null.","Bestwert der Reihe und erstmals seit 2022 wieder im Plus aus eigener Kraft."];
+const insMix=["Fast reines Print-Geschäft: Digital trägt erst 5 € von 100 € bei.","Digital zieht an, bleibt aber ein kleiner Teil des Werbeerlöses.","Digital wächst weiter, Print gibt langsam nach.","Jeder 11. Euro ist digital, die Verschiebung nimmt Fahrt auf.","Digital-Anteil rund jeder 10. Euro; Print bleibt klar das Fundament.","Digital springt auf 12 %, der stärkste Sprung der Reihe.","Digital nähert sich jedem 7. Euro, Print hält die Mehrheit.","Höchster Digital-Anteil: 15 € von 100 €. Print bleibt mit 85 % das Fundament."];
 
-/* ---------- helpers ---------- */
 const NS='http://www.w3.org/2000/svg';
 function E(t,a={},p){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e;}
 const de=(n,d=1)=>Math.abs(n).toLocaleString('de-DE',{minimumFractionDigits:d,maximumFractionDigits:d});
 const MIN='−'; const sgn=v=>v>=0?'+':MIN; const mio=v=>sgn(v)+de(v,1)+' Mio €';
 
-/* monotone cubic */
 function tangents(y){const n=y.length,d=[],m=[];for(let i=0;i<n-1;i++)d[i]=y[i+1]-y[i];m[0]=d[0];for(let i=1;i<n-1;i++)m[i]=(d[i-1]+d[i])/2;m[n-1]=d[n-2];
  for(let i=0;i<n-1;i++){if(d[i]===0){m[i]=0;m[i+1]=0;}else{const a=m[i]/d[i],b=m[i+1]/d[i],s=a*a+b*b;if(s>9){const t=3/Math.sqrt(s);m[i]=t*a*d[i];m[i+1]=t*b*d[i];}}}return m;}
 function evalMono(y,m,X){const n=y.length;if(X<=0)X=0;if(X>=n-1)X=n-1-1e-9;const i=Math.floor(X),t=X-i;
  return (2*t**3-3*t**2+1)*y[i]+(t**3-2*t**2+t)*m[i]+(-2*t**3+3*t**2)*y[i+1]+(t**3-t**2)*m[i+1];}
 function sample(v,steps){const m=tangents(v),o=[];for(let s=0;s<=steps;s++){const X=(N-1)*s/steps;o.push([X,evalMono(v,m,X)]);}return o;}
 
-/* ===================== RESULT CHART ===================== */
+/* =============== RESULT CHART =============== */
 const RE={W:920,H:400,PADX:60,T:46,B:62};RE.pb=RE.H-RE.B;RE.pt=RE.T;RE.max=4.8;RE.min=-5.9;
 const rx=i=>RE.PADX+i*(RE.W-2*RE.PADX)/(N-1);
 const ry=v=>RE.pt+(RE.max-v)/(RE.max-RE.min)*(RE.pb-RE.pt);
-let e_idx=LAST,e_reveal=false;
-
+let e_idx=4;/*2026*/
 function buildErg(){
   const svg=document.getElementById('svgErg');svg.innerHTML='';const y0=ry(0);
   const defs=E('defs',{},svg);
@@ -324,62 +306,58 @@ function buildErg(){
   E('line',{x1:RE.PADX-22,y1:y0,x2:RE.W-RE.PADX+22,y2:y0,stroke:'#aab1b6','stroke-width':1.5},svg);
   E('text',{x:RE.W-RE.PADX+22,y:y0-6,'text-anchor':'end',fill:'#8f969b','font-size':11,'font-weight':600},svg).textContent='Break-even (±0)';
 
-  const ST=220,ebtS=sample(D.map(d=>d.ebt),ST),ebitS=sample(D.map(d=>d.ebit),ST);
+  const ST=220,ebtS=sample(D.map(d=>d.ebt),ST),ebitS=sample(D.map(d=>d.ebt-d.foe),ST);
   const XY=p=>[rx(p[0]),ry(p[1])];
   const lD=a=>'M'+a.map(p=>{const q=XY(p);return q[0].toFixed(1)+' '+q[1].toFixed(1);}).join(' L');
   const aD=a=>{const q=a.map(XY);return 'M'+q[0][0].toFixed(1)+' '+y0+' L'+q.map(p=>p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' L')+' L'+q[q.length-1][0].toFixed(1)+' '+y0+' Z';};
 
-  const band=E('path',{id:'foeBand',d:'M'+ebtS.map(p=>{const q=XY(p);return q[0].toFixed(1)+' '+q[1].toFixed(1);}).join(' L')+' L'+[...ebitS].reverse().map(p=>{const q=XY(p);return q[0].toFixed(1)+' '+q[1].toFixed(1);}).join(' L')+' Z',fill:'#FAA61A','fill-opacity':.18},svg);
-  band.style.opacity=0;band.style.transition='opacity .4s';
-  const eb=E('path',{id:'ebitLine',d:lD(ebitS),fill:'none',stroke:'#9a6b06','stroke-width':2,'stroke-dasharray':'6 5','stroke-linejoin':'round'},svg);
-  eb.style.opacity=0;eb.style.transition='opacity .4s';
+  // subsidy band + EBIT line (ON by default, toggleable)
+  E('path',{id:'foeBand',d:'M'+ebtS.map(p=>{const q=XY(p);return q[0].toFixed(1)+' '+q[1].toFixed(1);}).join(' L')+' L'+[...ebitS].reverse().map(p=>{const q=XY(p);return q[0].toFixed(1)+' '+q[1].toFixed(1);}).join(' L')+' Z',fill:'#FAA61A','fill-opacity':.16},svg);
+  E('path',{id:'ebitLine',d:lD(ebitS),fill:'none',stroke:'#9a6b06','stroke-width':2,'stroke-dasharray':'6 5','stroke-linejoin':'round'},svg);
 
   E('path',{d:aD(ebtS),fill:'#00898D','fill-opacity':.17,'clip-path':'url(#cA)'},svg);
   E('path',{d:aD(ebtS),fill:'#E60000','fill-opacity':.14,'clip-path':'url(#cB)'},svg);
   E('path',{d:lD(ebtS),fill:'none',stroke:'#00898D','stroke-width':3.4,'stroke-linejoin':'round','stroke-linecap':'round','clip-path':'url(#cA)'},svg);
   E('path',{d:lD(ebtS),fill:'none',stroke:'#E60000','stroke-width':3.4,'stroke-linejoin':'round','stroke-linecap':'round','clip-path':'url(#cB)'},svg);
   D.forEach((d,i)=>E('circle',{cx:rx(i),cy:ry(d.ebt),r:3,fill:'#fff',stroke:d.ebt>=0?'#00898D':'#E60000','stroke-width':2},svg));
-  E('text',{x:rx(3),y:ry(D[3].ebt)+30,'text-anchor':'middle',fill:'#E60000','font-size':12,'font-weight':800},svg).textContent='Tiefpunkt';
-  E('text',{x:rx(LAST),y:ry(D[LAST].ebt)-16,'text-anchor':'middle',fill:'#00696C','font-size':12,'font-weight':800},svg).textContent='Ziel';
 
-  // hover layer
+  function halo(t){t.style.paintOrder='stroke';t.setAttribute('stroke','#fff');t.setAttribute('stroke-width','3.5');t.setAttribute('stroke-linejoin','round');return t;}
+  halo(E('text',{id:'lblEK',x:rx(6),y:ry(D[6].ebt-D[6].foe)+20,'text-anchor':'middle',fill:'#9a6b06','font-size':11.5,'font-weight':700},svg)).textContent='aus eigener Kraft';
+  halo(E('text',{id:'lblFoe',x:rx(5),y:(ry(D[5].ebt)+ry(D[5].ebt-D[5].foe))/2+4,'text-anchor':'middle',fill:'#b97d08','font-size':11.5,'font-weight':700},svg)).textContent='Förderungen';
+  halo(E('text',{x:rx(3),y:ry(D[3].ebt)+30,'text-anchor':'middle',fill:'#E60000','font-size':12,'font-weight':800},svg)).textContent='Tiefpunkt';
+  halo(E('text',{x:rx(LAST),y:ry(D[LAST].ebt)-16,'text-anchor':'middle',fill:'#00696C','font-size':12,'font-weight':800},svg)).textContent='Ziel';
+
   const hv=E('g',{id:'e_hv'},svg);hv.style.opacity=0;hv.style.transition='opacity .12s';
   E('line',{id:'e_hx',y1:RE.pt-10,y2:RE.pb,stroke:'#15191b','stroke-width':1,'stroke-dasharray':'3 4','stroke-opacity':.5},hv);
   E('line',{id:'e_hy',x1:RE.PADX,stroke:'#15191b','stroke-width':1,'stroke-dasharray':'3 4','stroke-opacity':.5},hv);
   E('circle',{id:'e_hdot',r:5.5,fill:'#15191b'},hv);
-  const xl=E('text',{id:'e_hxl','text-anchor':'middle',fill:'#15191b','font-size':12,'font-weight':800},hv);xl.style.paintOrder='stroke';xl.setAttribute('stroke','#fff');xl.setAttribute('stroke-width','3.5');xl.setAttribute('stroke-linejoin','round');
-  const yl=E('text',{id:'e_hyl','text-anchor':'end',fill:'#15191b','font-size':12,'font-weight':800},hv);yl.style.paintOrder='stroke';yl.setAttribute('stroke','#fff');yl.setAttribute('stroke-width','3.5');yl.setAttribute('stroke-linejoin','round');
+  halo(E('text',{id:'e_hxl','text-anchor':'middle',fill:'#15191b','font-size':12,'font-weight':800},hv));
+  halo(E('text',{id:'e_hyl','text-anchor':'end',fill:'#15191b','font-size':12,'font-weight':800},hv));
 
-  // focal dot
   E('line',{id:'e_guide',x1:rx(LAST),y1:ry(0),x2:rx(LAST),y2:ry(D[LAST].ebt),stroke:'#15191b','stroke-width':1,'stroke-dasharray':'3 4','stroke-opacity':.4},svg);
   E('circle',{id:'e_halo',cx:rx(LAST),cy:ry(D[LAST].ebt),r:11,fill:'#00898D','fill-opacity':.16},svg);
   E('circle',{id:'e_dot',cx:rx(LAST),cy:ry(D[LAST].ebt),r:6.5,fill:'#fff',stroke:'#00696C','stroke-width':3.5},svg);
 
-  // overlay
-  const ov=E('rect',{x:RE.PADX-22,y:RE.pt-22,width:RE.W-2*RE.PADX+44,height:RE.pb-RE.pt+44,fill:'transparent'},svg);
-  ov.style.cursor='crosshair';
+  const ov=E('rect',{x:RE.PADX-22,y:RE.pt-22,width:RE.W-2*RE.PADX+44,height:RE.pb-RE.pt+44,fill:'transparent'},svg);ov.style.cursor='pointer';
   const tip=document.getElementById('e_htip');
   const ebtV=D.map(d=>d.ebt),ebtT=tangents(ebtV),stepE=(RE.W-2*RE.PADX)/(N-1);
+  function at(ev){const r=svg.getBoundingClientRect();let vbx=(ev.clientX-r.left)/r.width*RE.W;vbx=Math.max(RE.PADX,Math.min(RE.W-RE.PADX,vbx));return (vbx-RE.PADX)/stepE;}
   ov.addEventListener('mousemove',ev=>{
-    const r=svg.getBoundingClientRect();let vbx=(ev.clientX-r.left)/r.width*RE.W;
-    vbx=Math.max(RE.PADX,Math.min(RE.W-RE.PADX,vbx));
-    let X=(vbx-RE.PADX)/stepE;const rX=Math.max(0,Math.min(N-1,Math.round(X)));const exact=Math.abs(X-rX)<0.07;if(exact)X=rX;
+    let X=at(ev);const rX=Math.max(0,Math.min(N-1,Math.round(X)));const exact=Math.abs(X-rX)<0.07;if(exact)X=rX;
     const val=evalMono(ebtV,ebtT,X),x=RE.PADX+X*stepE,y=ry(val),d=D[rX];
     document.getElementById('e_hx').setAttribute('x1',x);document.getElementById('e_hx').setAttribute('x2',x);
     document.getElementById('e_hy').setAttribute('x2',x);document.getElementById('e_hy').setAttribute('y1',y);document.getElementById('e_hy').setAttribute('y2',y);
-    document.getElementById('e_hdot').setAttribute('cx',x);document.getElementById('e_hdot').setAttribute('cy',y);
-    document.getElementById('e_hdot').setAttribute('fill',val>=0?'#00696C':'#E60000');
+    document.getElementById('e_hdot').setAttribute('cx',x);document.getElementById('e_hdot').setAttribute('cy',y);document.getElementById('e_hdot').setAttribute('fill',val>=0?'#00696C':'#E60000');
     const xl=document.getElementById('e_hxl');xl.setAttribute('x',x);xl.setAttribute('y',RE.pb+18);xl.textContent=d.y;
     const yl=document.getElementById('e_hyl');yl.setAttribute('x',RE.PADX-6);yl.setAttribute('y',y+4);yl.textContent=(exact?'':'≈')+sgn(val)+de(val,1);
     hv.style.opacity=1;
-    const body=exact
-      ?`<div class="r"><span>EBT</span><span>${mio(d.ebt)}</span></div><div class="r"><span>EBIT</span><span>${mio(d.ebit)}</span></div><div class="r"><span>Förderungen</span><span>+${de(d.foe,1)} Mio €</span></div>`
-      :`<div class="r"><span>EBT (Trend)</span><span>≈ ${sgn(val)}${de(val,1)} Mio €</span></div>`;
+    const body=exact?`<div class="r"><span>Ergebnis (EBT)</span><span>${mio(d.ebt)}</span></div><div class="r"><span>Aus eigener Kraft</span><span>${mio(d.ebt-d.foe)}</span></div><div class="r"><span>Förderungen</span><span>+${de(d.foe,1)} Mio €</span></div>`:`<div class="r"><span>EBT (Trend)</span><span>≈ ${sgn(val)}${de(val,1)} Mio €</span></div>`;
     tip.innerHTML=`<div class="h">${exact?d.y:'um '+d.y}<span class="b">${d.plan?'Plan':'Ist'}</span></div>`+body;
     placeTip(tip,ev);
   });
-  ov.addEventListener('mouseleave',()=>{hv.style.opacity=0;tip.classList.remove('on');});
   ov.addEventListener('mouseenter',()=>tip.classList.add('on'));
+  ov.addEventListener('mouseleave',()=>{hv.style.opacity=0;tip.classList.remove('on');});
+  ov.addEventListener('click',ev=>{selErg(Math.max(0,Math.min(N-1,Math.round(at(ev)))));});
 }
 function paintErg(i,an){const d=D[i];
   document.getElementById('e_year').textContent=d.y;
@@ -388,17 +366,18 @@ function paintErg(i,an){const d=D[i];
   document.getElementById('e_num').textContent=sgn(d.ebt)+de(d.ebt,1);
   document.getElementById('e_word').textContent='Mio € '+(prof?'Gewinn':'Verlust');
   document.getElementById('e_ins').textContent=insErg[i];
-  document.getElementById('e_ebt').textContent=mio(d.ebt);document.getElementById('e_ebit').textContent=mio(d.ebit);
+  document.getElementById('e_ebt').textContent=mio(d.ebt);document.getElementById('e_ebit').textContent=mio(d.ebt-d.foe);
   document.getElementById('e_foe').textContent='+'+de(d.foe,1)+' Mio €';document.getElementById('e_ebitda').textContent=mio(d.ebitda);
   moveDot('e_dot','e_halo','e_guide',rx(i),ry(d.ebt),ry(0),prof?'#00696C':'#E60000',prof?'#00898D':'#E60000',an);
-  setScrub('e',i);
+  setTL('e',i);
 }
+function selErg(i){e_idx=i;paintErg(i,true);}
 
-/* ===================== MIX CHART ===================== */
+/* =============== MIX CHART =============== */
 const MX={W:920,H:190,PADX:60,T:26,B:42};MX.pb=MX.H-MX.B;MX.pt=MX.T;MX.max=16;MX.min=0;
 const mx=i=>MX.PADX+i*(MX.W-2*MX.PADX)/(N-1);
 const my=v=>MX.pt+(MX.max-v)/(MX.max-MX.min)*(MX.pb-MX.pt);
-let m_idx=LAST;
+let m_idx=4;/*2026*/
 function buildMix(){
   const svg=document.getElementById('svgMix');svg.innerHTML='';
   const defs=E('defs',{},svg);const g=E('linearGradient',{id:'mg',x1:0,y1:1,x2:0,y2:0},defs);
@@ -420,23 +399,21 @@ function buildMix(){
   E('line',{id:'m_guide',x1:mx(LAST),y1:MX.pb,x2:mx(LAST),y2:my(D[LAST].pD),stroke:'#15191b','stroke-width':1,'stroke-dasharray':'3 4','stroke-opacity':.4},svg);
   E('circle',{id:'m_halo',cx:mx(LAST),cy:my(D[LAST].pD),r:10,fill:'#00898D','fill-opacity':.16},svg);
   E('circle',{id:'m_dot',cx:mx(LAST),cy:my(D[LAST].pD),r:6,fill:'#fff',stroke:'#00696C','stroke-width':3.2},svg);
-  const ov=E('rect',{x:MX.PADX-22,y:MX.pt-8,width:MX.W-2*MX.PADX+44,height:MX.pb-MX.pt+14,fill:'transparent'},svg);ov.style.cursor='crosshair';
+  const ov=E('rect',{x:MX.PADX-22,y:MX.pt-8,width:MX.W-2*MX.PADX+44,height:MX.pb-MX.pt+14,fill:'transparent'},svg);ov.style.cursor='pointer';
   const tip=document.getElementById('m_htip');
   const pdV=D.map(d=>d.pD),pdT=tangents(pdV),stepM=(MX.W-2*MX.PADX)/(N-1);
-  ov.addEventListener('mousemove',ev=>{const r=svg.getBoundingClientRect();let vbx=(ev.clientX-r.left)/r.width*MX.W;
-    vbx=Math.max(MX.PADX,Math.min(MX.W-MX.PADX,vbx));
-    let X=(vbx-MX.PADX)/stepM;const rX=Math.max(0,Math.min(N-1,Math.round(X)));const exact=Math.abs(X-rX)<0.07;if(exact)X=rX;
+  function at(ev){const r=svg.getBoundingClientRect();let vbx=(ev.clientX-r.left)/r.width*MX.W;vbx=Math.max(MX.PADX,Math.min(MX.W-MX.PADX,vbx));return (vbx-MX.PADX)/stepM;}
+  ov.addEventListener('mousemove',ev=>{let X=at(ev);const rX=Math.max(0,Math.min(N-1,Math.round(X)));const exact=Math.abs(X-rX)<0.07;if(exact)X=rX;
     const val=evalMono(pdV,pdT,X),x=MX.PADX+X*stepM,y=my(val),d=D[rX];
     document.getElementById('m_hx').setAttribute('x1',x);document.getElementById('m_hx').setAttribute('x2',x);
     document.getElementById('m_hdot').setAttribute('cx',x);document.getElementById('m_hdot').setAttribute('cy',y);
     hv.style.opacity=1;
-    const body=exact
-      ?`<div class="r"><span>Digital</span><span>${de(d.pD,1)} %</span></div><div class="r"><span>Print</span><span>${de(d.print,1)} Mio €</span></div><div class="r"><span>Digital</span><span>${de(d.dig,1)} Mio €</span></div>`
-      :`<div class="r"><span>Digital-Anteil</span><span>≈ ${de(val,1)} %</span></div>`;
+    const body=exact?`<div class="r"><span>Digital</span><span>${de(d.pD,1)} %</span></div><div class="r"><span>Print</span><span>${de(d.print,1)} Mio €</span></div><div class="r"><span>Digital</span><span>${de(d.dig,1)} Mio €</span></div>`:`<div class="r"><span>Digital-Anteil</span><span>≈ ${de(val,1)} %</span></div>`;
     tip.innerHTML=`<div class="h">${exact?d.y:'um '+d.y}<span class="b">${d.plan?'Plan':'Ist'}</span></div>`+body;
     placeTip(tip,ev);});
-  ov.addEventListener('mouseleave',()=>{hv.style.opacity=0;tip.classList.remove('on');});
   ov.addEventListener('mouseenter',()=>tip.classList.add('on'));
+  ov.addEventListener('mouseleave',()=>{hv.style.opacity=0;tip.classList.remove('on');});
+  ov.addEventListener('click',ev=>{selMix(Math.max(0,Math.min(N-1,Math.round(at(ev)))));});
 }
 function paintMix(i,an){const d=D[i];
   document.getElementById('m_year').textContent=d.y;
@@ -450,19 +427,16 @@ function paintMix(i,an){const d=D[i];
   document.getElementById('m_segpr').style.flexGrow=d.pP;document.getElementById('m_segdg').style.flexGrow=d.pD;
   document.getElementById('m_segpr').textContent=pr>10?'Print '+pr+' €':pr+' €';document.getElementById('m_segdg').textContent=dg+' €';
   moveDot('m_dot','m_halo','m_guide',mx(i),my(d.pD),MX.pb,'#00696C','#00898D',an);
-  setScrub('m',i);
+  setTL('m',i);
 }
+function selMix(i){m_idx=i;paintMix(i,true);}
 
-/* ---------- hover + tip helpers ---------- */
-function hoverIdx(svg,ev,C){const r=svg.getBoundingClientRect();const vbx=(ev.clientX-r.left)/r.width*C.W;
-  let i=Math.round((vbx-C.PADX)/((C.W-2*C.PADX)/(N-1)));return Math.max(0,Math.min(N-1,i));}
+/* shared helpers */
 function placeTip(tip,ev){const host=tip.parentNode,hr=host.getBoundingClientRect();
   let x=ev.clientX-hr.left+14,y=ev.clientY-hr.top+14;
   if(x+tip.offsetWidth>hr.width)x=ev.clientX-hr.left-tip.offsetWidth-14;
   if(y+tip.offsetHeight>hr.height)y=hr.height-tip.offsetHeight-6;
   tip.style.left=x+'px';tip.style.top=Math.max(2,y)+'px';}
-
-/* ---------- dot mover ---------- */
 function moveDot(dotId,haloId,guideId,x,y,baseY,stroke,halo,an){
   const dot=document.getElementById(dotId),h=document.getElementById(haloId),g=document.getElementById(guideId);
   dot.setAttribute('stroke',stroke);h.setAttribute('fill',halo);
@@ -473,72 +447,34 @@ function moveDot(dotId,haloId,guideId,x,y,baseY,stroke,halo,an){
     g.setAttribute('x1',cx);g.setAttribute('x2',cx);g.setAttribute('y1',baseY);g.setAttribute('y2',cy);
     if(k<1)requestAnimationFrame(st);})(performance.now());
 }
+function buildTL(pre,xfn,W,onPick){const tl=document.getElementById(pre+'_tl');tl.innerHTML='';
+  D.forEach((d,i)=>{const b=document.createElement('button');b.className='tl-year';b.id=pre+'_ty'+i;b.style.left=(xfn(i)/W*100)+'%';b.textContent=d.y;b.onclick=()=>onPick(i);tl.appendChild(b);});}
+function setTL(pre,i){const tl=document.getElementById(pre+'_tl').children;for(let k=0;k<tl.length;k++)tl[k].classList.toggle('cur',k===i);}
+function tileToggle(headId,bodyId,moreId){const h=document.getElementById(headId),b=document.getElementById(bodyId),m=document.getElementById(moreId);
+  h.onclick=()=>{const open=b.classList.toggle('open');h.setAttribute('aria-expanded',open);m.textContent=open?'Weniger':'Details';};}
 
-/* ---------- scrubber + play ---------- */
-function buildTicks(pre,onPick){const t=document.getElementById(pre+'_ticks');t.innerHTML='';
-  D.forEach((d,i)=>{const b=document.createElement('button');b.textContent=d.y;b.onclick=()=>onPick(i);t.appendChild(b);});
-  const track=document.getElementById(pre+'_track');
-  D.forEach((d,i)=>{const dot=document.createElement('div');dot.className='tickdot';dot.id=pre+'_td'+i;dot.style.left=(i/(N-1)*100)+'%';track.appendChild(dot);});
-  document.getElementById(pre+'_knob').style.zIndex=3;
-}
-function setScrub(pre,i){const pct=i/(N-1)*100;
-  document.getElementById(pre+'_fill').style.width=pct+'%';
-  document.getElementById(pre+'_knob').style.left=pct+'%';
-  document.getElementById(pre+'_ist').style.width=((FCB-1)/(N-1)*100)+'%';
-  const tk=document.getElementById(pre+'_ticks').children;for(let k=0;k<tk.length;k++)tk[k].classList.toggle('cur',k===i);
-  for(let k=0;k<N;k++){const td=document.getElementById(pre+'_td'+k);if(td){td.classList.toggle('done',k<=i);td.classList.toggle('cur',k===i);}}
-}
-function dragScrub(pre,onPick){const track=document.getElementById(pre+'_track');let drag=false;
-  function pick(cx){const r=track.getBoundingClientRect();let p=(cx-r.left)/r.width;p=Math.max(0,Math.min(1,p));onPick(Math.round(p*(N-1)));}
-  const dn=e=>{drag=true;pick((e.touches?e.touches[0]:e).clientX);e.preventDefault();};
-  const mv=e=>{if(drag)pick((e.touches?e.touches[0]:e).clientX);};const up=()=>drag=false;
-  track.addEventListener('mousedown',dn);track.addEventListener('touchstart',dn,{passive:false});
-  addEventListener('mousemove',mv);addEventListener('touchmove',mv,{passive:false});addEventListener('mouseup',up);addEventListener('touchend',up);}
-const PLAY='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>',PAUSE='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>';
-function player(btnId,getIdx,setIdx){const btn=document.getElementById(btnId);btn.innerHTML=PLAY;let timer=null;
-  function stop(){clearInterval(timer);timer=null;btn.innerHTML=PLAY;}
-  btn.onclick=()=>{if(timer){stop();return;}if(getIdx()>=LAST)setIdx(0,true);btn.innerHTML=PAUSE;
-    timer=setInterval(()=>{const n=getIdx()+1;if(n>LAST){stop();return;}setIdx(n,true);},1050);};
-  return stop;}
-function tileCollapse(headId,bodyId){const h=document.getElementById(headId),b=document.getElementById(bodyId);
-  h.onclick=()=>{const c=b.classList.toggle('collapsed');h.classList.toggle('collapsed',c);h.setAttribute('aria-expanded',!c);};}
-
-/* ---------- wire up ---------- */
 buildErg();buildMix();
-buildTicks('e',i=>{stopE();e_idx=i;paintErg(i,true);});
-buildTicks('m',i=>{stopM();m_idx=i;paintMix(i,true);});
-dragScrub('e',i=>{stopE();e_idx=i;paintErg(i,true);});
-dragScrub('m',i=>{stopM();m_idx=i;paintMix(i,true);});
-const stopE=player('e_play',()=>e_idx,(i,a)=>{e_idx=i;paintErg(i,a);});
-const stopM=player('m_play',()=>m_idx,(i,a)=>{m_idx=i;paintMix(i,a);});
-tileCollapse('e_shead','e_body');tileCollapse('m_shead','m_body');
-const tg=document.getElementById('e_tg');
-tg.onclick=()=>{e_reveal=!e_reveal;tg.classList.toggle('on',e_reveal);tg.setAttribute('aria-checked',e_reveal);
-  document.getElementById('foeBand').style.opacity=e_reveal?1:0;document.getElementById('ebitLine').style.opacity=e_reveal?1:0;
-  document.getElementById('e_revhint').textContent=e_reveal?'orange = Beitrag der Förderungen':'zeigt, was die Förderungen tragen';};
+buildTL('e',rx,RE.W,selErg);buildTL('m',mx,MX.W,selMix);
+tileToggle('e_shead','e_body','e_moretxt');tileToggle('m_shead','m_body','m_moretxt');
+(function(){const tg=document.getElementById('e_tg'),leg=document.getElementById('e_legend'),eq=document.getElementById('e_eq');const els=['foeBand','ebitLine','lblEK','lblFoe'].map(id=>document.getElementById(id));els.forEach(e=>{if(e)e.style.transition='opacity .35s ease';});let on=true;
+  tg.onclick=()=>{on=!on;tg.setAttribute('aria-checked',on);els.forEach(e=>{if(e)e.style.opacity=on?1:0;});leg.classList.toggle('off',!on);if(eq)eq.style.opacity=on?'1':'0';};
+  window.__ekToggle=()=>tg.click();})();
 document.getElementById('switch').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
   document.querySelectorAll('#switch button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
   document.querySelectorAll('.mode').forEach(x=>x.classList.remove('show'));document.getElementById('mode-'+b.dataset.mode).classList.add('show');
-  stopE();stopM();if(b.dataset.mode==='erg')paintErg(e_idx,false);else paintMix(m_idx,false);});
+  if(b.dataset.mode==='erg')paintErg(e_idx,false);else paintMix(m_idx,false);});
 
-/* ---------- liquid glass parallax ---------- */
-const layers=[...document.querySelectorAll('.layer')];
-const depth=layers.map(l=>+l.dataset.d);
+const layers=[...document.querySelectorAll('.layer')];const depth=layers.map(l=>+l.dataset.d);
 let tmx=0,tmy=0,cmx=0,cmy=0;const app=document.getElementById('app');
 addEventListener('mousemove',e=>{tmx=e.clientX/innerWidth-.5;tmy=e.clientY/innerHeight-.5;
-  const r=app.getBoundingClientRect();
-  app.style.setProperty('--hx',((e.clientX-r.left)/r.width*100).toFixed(1)+'%');
-  app.style.setProperty('--hy',((e.clientY-r.top)/r.height*100).toFixed(1)+'%');});
-(function loop(){cmx+=(tmx-cmx)*.06;cmy+=(tmy-cmy)*.06;
-  for(let i=0;i<layers.length;i++)layers[i].style.transform='translate3d('+(cmx*depth[i]).toFixed(1)+'px,'+(cmy*depth[i]).toFixed(1)+'px,0)';
-  requestAnimationFrame(loop);})();
+  const r=app.getBoundingClientRect();app.style.setProperty('--hx',((e.clientX-r.left)/r.width*100).toFixed(1)+'%');app.style.setProperty('--hy',((e.clientY-r.top)/r.height*100).toFixed(1)+'%');});
+(function loop(){cmx+=(tmx-cmx)*.06;cmy+=(tmy-cmy)*.06;for(let i=0;i<layers.length;i++)layers[i].style.transform='translate3d('+(cmx*depth[i]).toFixed(1)+'px,'+(cmy*depth[i]).toFixed(1)+'px,0)';requestAnimationFrame(loop);})();
 
-/* verification hook */
-window.__render=(mode,idx,reveal)=>{if(mode==='erg'){e_idx=idx;if(reveal){e_reveal=true;document.getElementById('foeBand').style.opacity=1;document.getElementById('ebitLine').style.opacity=1;tg.classList.add('on');}paintErg(idx,false);}else{m_idx=idx;paintMix(idx,false);}};
-window.__toggleTile=()=>{document.getElementById('e_shead').click();};
+window.__render=(mode,idx)=>{if(mode==='erg')selErg(idx);else selMix(idx);};
+window.__tile=(m)=>document.getElementById(m+'_shead').click();
 
-/* init — NO autoplay */
-paintErg(LAST,false);paintMix(LAST,false);
+/* init . no autoplay, tile collapsed by default */
+paintErg(4,false);paintMix(4,false);
 </script>
 </body>
 </html>
