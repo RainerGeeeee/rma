@@ -180,15 +180,15 @@ svg.chart{width:100%;height:auto;display:block;overflow:visible;font-family:var(
         </div>
       </div>
 
-      <div class="legend" id="e_legend">
+      <div class="legend off" id="e_legend">
         <span class="lg"><span class="sw-res"></span>Ergebnis unterm Strich · EBT (mit Förderungen)</span>
         <span class="lg lg-ek"><span class="sw-ebit"></span>Aus eigener Kraft (ohne Förderungen)</span>
         <span class="lg lg-ek"><span class="sw-foe"></span>Förderungen</span>
-        <button class="lg-tg" id="e_tg" role="switch" aria-checked="true" title="Linie und Band ohne Förderungen ein- oder ausblenden">
+        <button class="lg-tg" id="e_tg" role="switch" aria-checked="false" title="Linie und Band ohne Förderungen ein- oder ausblenden">
           <span class="sw"></span>ohne Förderungen vergleichen
         </button>
       </div>
-      <div class="lg-eq" id="e_eq">Ergebnis (EBT) = <b>Aus eigener Kraft</b> &nbsp;+&nbsp; <b>Förderungen</b></div>
+      <div class="lg-eq" id="e_eq" style="opacity:0">Ergebnis (EBT) = <b>Aus eigener Kraft</b> &nbsp;+&nbsp; <b>Förderungen</b></div>
 
       <div class="chart-host">
         <svg class="chart" id="svgErg" viewBox="0 0 920 400" aria-label="Ergebnisverlauf"></svg>
@@ -456,8 +456,10 @@ function tileToggle(headId,bodyId,moreId){const h=document.getElementById(headId
 buildErg();buildMix();
 buildTL('e',rx,RE.W,selErg);buildTL('m',mx,MX.W,selMix);
 tileToggle('e_shead','e_body','e_moretxt');tileToggle('m_shead','m_body','m_moretxt');
-(function(){const tg=document.getElementById('e_tg'),leg=document.getElementById('e_legend'),eq=document.getElementById('e_eq');const els=['foeBand','ebitLine','lblEK','lblFoe'].map(id=>document.getElementById(id));els.forEach(e=>{if(e)e.style.transition='opacity .35s ease';});let on=true;
-  tg.onclick=()=>{on=!on;tg.setAttribute('aria-checked',on);els.forEach(e=>{if(e)e.style.opacity=on?1:0;});leg.classList.toggle('off',!on);if(eq)eq.style.opacity=on?'1':'0';};
+(function(){const tg=document.getElementById('e_tg'),leg=document.getElementById('e_legend'),eq=document.getElementById('e_eq');const els=['foeBand','ebitLine','lblEK','lblFoe'].map(id=>document.getElementById(id));let on=false;
+  function apply(){tg.setAttribute('aria-checked',on);els.forEach(e=>{if(e)e.style.opacity=on?1:0;});leg.classList.toggle('off',!on);if(eq)eq.style.opacity=on?'1':'0';}
+  apply();els.forEach(e=>{if(e)e.style.transition='opacity .35s ease';});
+  tg.onclick=()=>{on=!on;apply();};
   window.__ekToggle=()=>tg.click();})();
 document.getElementById('switch').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
   document.querySelectorAll('#switch button').forEach(x=>x.classList.remove('on'));b.classList.add('on');
