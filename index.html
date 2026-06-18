@@ -74,6 +74,9 @@ body{font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased
 .sw-ebit{width:24px;height:0;border-top:2px dashed var(--orange-dk)}
 .sw-foe{width:14px;height:13px;border-radius:3px;background:rgba(250,166,26,.3);border:1px solid rgba(250,166,26,.55)}
 .sw-kor{width:16px;height:13px;border-radius:3px;background:rgba(230,0,0,.16);border:1px dashed var(--red)}
+.sw-gm{width:16px;height:13px;border-radius:3px;background:rgba(0,165,188,.18);border:1px dashed #00A5BC}
+.sw-eff{width:16px;height:13px;border-radius:3px;background:rgba(224,147,15,.18);border:1px dashed #E0930F}
+.sw-mx{width:16px;height:13px;border-radius:3px;background:rgba(37,99,181,.16);border:1px dashed #2563B5}
 .sw-pr{width:24px;height:5px;border-radius:3px;background:var(--slate)}
 .sw-dg{width:24px;height:5px;border-radius:3px;background:var(--teal)}
 .lg-tg{display:inline-flex;align-items:center;gap:9px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 14px 6px 7px;cursor:pointer;font-family:inherit;font-size:12px;font-weight:700;color:var(--ink-2);transition:.2s}
@@ -197,7 +200,9 @@ svg.chart{width:100%;height:auto;display:block;overflow:visible;font-family:var(
         <span class="lg"><span class="sw-res"></span>Ergebnis unterm Strich · EBT (mit Förderungen)</span>
         <span class="lg lg-ek"><span class="sw-ebit"></span>Aus eigener Kraft (ohne Förderungen)</span>
         <span class="lg lg-ek"><span class="sw-foe"></span>Förderungen</span>
-        <span class="lg"><span class="sw-kor"></span>Wachstumskorridor 2030</span>
+        <span class="lg"><span class="sw-mx"></span>Maximum möglich</span>
+        <span class="lg"><span class="sw-gm"></span>durch neue Geschäftsmodelle</span>
+        <span class="lg"><span class="sw-eff"></span>durch Effizienzsteigerungen</span>
         <button class="lg-tg" id="e_tg" role="switch" aria-checked="false" title="Linie und Band ohne Förderungen ein- oder ausblenden"><span class="sw"></span>ohne Förderungen vergleichen</button>
       </div>
       <div class="lg-eq" id="e_eq" style="opacity:0">Ergebnis (EBT) = <b>Aus eigener Kraft</b> &nbsp;+&nbsp; <b>Förderungen</b></div>
@@ -209,10 +214,10 @@ svg.chart{width:100%;height:auto;display:block;overflow:visible;font-family:var(
       <div class="timeline" id="e_tl"></div>
 
       <div class="corr">
-        <span class="ct"><span class="sw-kor"></span>Wachstumskorridor bis 2030</span>
-        <label>ab Jahr <input type="number" id="ci_year" min="2022" max="2029" step="1" value="2027"></label>
-        <label>Steigerung p.a. <input type="number" id="ci_rate" min="0" max="60" step="1" value="15"> %</label>
-        <span class="res" id="ci_res"></span>
+        <span class="ct">Aufschläge auf die Ergebnis-Kurve (Szenarien · ohne fixe Zielwerte)</span>
+        <label><span class="sw-gm"></span>durch neue Geschäftsmodelle: ab <input type="number" id="gm_year" min="2023" max="2030" step="1" value="2027"> · <input type="number" id="gm_pct" min="0" max="200" step="1" value="30"> %</label>
+        <label><span class="sw-eff"></span>durch Effizienzsteigerungen: ab <input type="number" id="eff_year" min="2023" max="2030" step="1" value="2027"> · <input type="number" id="eff_pct" min="0" max="200" step="1" value="20"> %</label>
+        <span class="res" id="lift_res"></span>
       </div>
 
       <div class="playrow">
@@ -382,14 +387,17 @@ function moveDot(dotId,haloId,guideId,x,y,baseY,stroke,halo,an){
 }
 
 /* ====== RESULT CHART ====== */
-const RE={W:1000,H:440,PADX:62,T:54,B:66};RE.pb=RE.H-RE.B;RE.pt=RE.T;RE.min=-5.9;RE.max=8;
-const rx=i=>RE.PADX+i*(RE.W-2*RE.PADX)/(NAX-1);
+const RE={W:1000,H:440,PADX:62,T:54,B:66};RE.pb=RE.H-RE.B;RE.pt=RE.T;RE.min=-5.9;RE.max=8;RE.PR=255;
+const rx=i=>RE.PADX+i*(RE.W-RE.PADX-RE.PR)/(NAX-1);
 const ry=v=>RE.pt+(RE.max-v)/(RE.max-RE.min)*(RE.pb-RE.pt);
 let e_idx=4, ekOn=false;
-function corr(){const sy=clamp(parseInt(document.getElementById('ci_year').value)||2027,2022,2029);
-  const r=clamp(parseFloat(document.getElementById('ci_rate').value)||0,0,60)/100;const si=sy-2022;
-  return {sy,r,si,up2030:D[LAST].ebt*Math.pow(1+r,8-si)};}
-function ergMax(){return Math.max(5.5,Math.ceil(corr().up2030+1.6));}
+const ergAt=X=>evEbt(Math.min(X,LAST));
+function sampleErg(steps){const o=[];for(let s=0;s<=steps;s++){const X=8*s/steps;o.push([X,evEbt(Math.min(X,LAST))]);}return o;}
+function lifts(){const gy=clamp(parseInt(document.getElementById('gm_year').value)||2027,2023,2030),gp=clamp(parseFloat(document.getElementById('gm_pct').value)||0,0,200)/100;
+  const ey=clamp(parseInt(document.getElementById('eff_year').value)||2027,2023,2030),ep=clamp(parseFloat(document.getElementById('eff_pct').value)||0,0,200)/100;
+  const e8=ergAt(8);return {gmS:gy-2022,gm:gp,effS:ey-2022,eff:ep,e8,A8:e8*(1+gp),B8:e8*(1+gp+ep)};}
+function ergMax(){const l=lifts();return Math.max(5.5,Math.ceil(l.B8+1.6));}
+function setChipLabels(m){const c=document.querySelectorAll('#e_brk .chip');const L=m?['Ergebnis-Basis (EBT)','durch neue Geschäftsmodelle','durch Effizienzsteigerungen','Maximum möglich']:['Ergebnis · EBT (mit Förderungen)','Aus eigener Kraft (ohne Förderungen)','Förderungen','EBITDA (operativ)'];c.forEach((x,i)=>{if(x.childNodes[0])x.childNodes[0].nodeValue=L[i];});}
 function buildErg(){
   const svg=document.getElementById('svgErg');svg.innerHTML='';const y0=ry(0);
   const defs=E('defs',{},svg);
@@ -405,23 +413,23 @@ function buildErg(){
   const xd=(rx(3)+rx(4))/2;
   E('line',{x1:xd,y1:RE.pt-20,x2:xd,y2:RE.pb+6,stroke:'#cfd4d7','stroke-width':1,'stroke-dasharray':'4 5'},svg);
   E('text',{x:(rx(0)+rx(3))/2,y:RE.pt-28,'text-anchor':'middle',fill:'#a7aeb3','font-size':10.5,'font-weight':800,'letter-spacing':1.5},svg).textContent='IST';
-  E('text',{x:(rx(4)+rx(8))/2,y:RE.pt-28,'text-anchor':'middle',fill:'#c39a52','font-size':10.5,'font-weight':800,'letter-spacing':1.5},svg).textContent='PROGNOSE · PLAN · KORRIDOR';
+  E('text',{x:(rx(4)+rx(8))/2,y:RE.pt-28,'text-anchor':'middle',fill:'#c39a52','font-size':10.5,'font-weight':800,'letter-spacing':1.5},svg).textContent='PROGNOSE · PLAN · SZENARIEN';
   E('line',{x1:RE.PADX-24,y1:y0,x2:RE.W-RE.PADX+24,y2:y0,stroke:'#aab1b6','stroke-width':1.5},svg);
   E('text',{x:RE.W-RE.PADX+24,y:y0-6,'text-anchor':'end',fill:'#8f969b','font-size':11,'font-weight':700},svg).textContent='±0';
 
-  const ST=200, ebtS=sampleN(ebtV,N,ST), ekS=sampleN(D.map(d=>d.ebt-d.foe),N,ST);
+  const ST=200, ebtS=sampleErg(ST), ebtS7=sampleN(ebtV,N,ST), ekS=sampleN(D.map(d=>d.ebt-d.foe),N,ST);
   const XY=p=>[rx(p[0]),ry(p[1])];
   const lD=a=>'M'+a.map(p=>{const q=XY(p);return q[0].toFixed(1)+' '+q[1].toFixed(1);}).join(' L');
   const aD=a=>{const q=a.map(XY);return 'M'+q[0][0].toFixed(1)+' '+y0+' L'+q.map(p=>p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' L')+' L'+q[q.length-1][0].toFixed(1)+' '+y0+' Z';};
   const g=E('g',{'clip-path':'url(#revE)'},svg);
   E('g',{id:'funnelG'},g);
-  E('path',{id:'foeBand',d:'M'+ebtS.map(p=>{const q=XY(p);return q[0].toFixed(1)+' '+q[1].toFixed(1);}).join(' L')+' L'+[...ekS].reverse().map(p=>{const q=XY(p);return q[0].toFixed(1)+' '+q[1].toFixed(1);}).join(' L')+' Z',fill:'#FAA61A','fill-opacity':.16,opacity:0},g);
+  E('path',{id:'foeBand',d:'M'+ebtS7.map(p=>{const q=XY(p);return q[0].toFixed(1)+' '+q[1].toFixed(1);}).join(' L')+' L'+[...ekS].reverse().map(p=>{const q=XY(p);return q[0].toFixed(1)+' '+q[1].toFixed(1);}).join(' L')+' Z',fill:'#FAA61A','fill-opacity':.16,opacity:0},g);
   E('path',{id:'ebitLine',d:lD(ekS),fill:'none',stroke:'#9a6b06','stroke-width':2,'stroke-dasharray':'6 5','stroke-linejoin':'round',opacity:0},g);
   E('path',{d:aD(ebtS),fill:'#00898D','fill-opacity':.17,'clip-path':'url(#cA)'},g);
   E('path',{d:aD(ebtS),fill:'#E60000','fill-opacity':.14,'clip-path':'url(#cB)'},g);
   E('path',{d:lD(ebtS),fill:'none',stroke:'#00898D','stroke-width':3.8,'stroke-linejoin':'round','stroke-linecap':'round','clip-path':'url(#cA)'},g);
   E('path',{d:lD(ebtS),fill:'none',stroke:'#E60000','stroke-width':3.8,'stroke-linejoin':'round','stroke-linecap':'round','clip-path':'url(#cB)'},g);
-  D.forEach((d,i)=>E('circle',{cx:rx(i),cy:ry(d.ebt),r:3,fill:'#fff',stroke:d.ebt>=0?'#00898D':'#E60000','stroke-width':2},g));
+  D.forEach((d,i)=>E('circle',{cx:rx(i),cy:ry(d.ebt),r:3,fill:'#fff',stroke:d.ebt>=0?'#00898D':'#E60000','stroke-width':2},g));E('circle',{cx:rx(8),cy:ry(D[LAST].ebt),r:3,fill:'#fff',stroke:'#9aa1a6','stroke-width':2},g);
   function halo(t){t.style.paintOrder='stroke';t.setAttribute('stroke','#fff');t.setAttribute('stroke-width','3.5');t.setAttribute('stroke-linejoin','round');return t;}
   halo(E('text',{id:'lblEK',x:rx(6),y:ry(D[6].ebt-D[6].foe)+20,'text-anchor':'middle',fill:'#9a6b06','font-size':11.5,'font-weight':800,opacity:0},g)).textContent='aus eigener Kraft';
   halo(E('text',{id:'lblFoe',x:rx(5),y:(ry(D[5].ebt)+ry(D[5].ebt-D[5].foe))/2+4,'text-anchor':'middle',fill:'#b97d08','font-size':11.5,'font-weight':800,opacity:0},g)).textContent='Förderungen';
@@ -440,16 +448,16 @@ function buildErg(){
   E('circle',{id:'e_dot',cx:rx(4),cy:ry(D[4].ebt),r:7,fill:'#fff',stroke:'#00696C','stroke-width':4},svg);
 
   const ov=E('rect',{x:RE.PADX-24,y:RE.pt-28,width:RE.W-2*RE.PADX+48,height:RE.pb-RE.pt+52,fill:'transparent'},svg);ov.style.cursor='pointer';
-  const tip=document.getElementById('e_htip'),step=(RE.W-2*RE.PADX)/(NAX-1);
+  const tip=document.getElementById('e_htip'),step=(RE.W-RE.PADX-RE.PR)/(NAX-1);
   function at(ev){const r=svg.getBoundingClientRect();let vx=(ev.clientX-r.left)/r.width*RE.W;vx=clamp(vx,RE.PADX,rx(8));return (vx-RE.PADX)/step;}
-  ov.addEventListener('mousemove',ev=>{let X=at(ev);const c=corr();
-    if(X>LAST+0.03){const Xc=Math.min(X,8),cv=evEbt(Math.min(Xc,LAST))*Math.pow(1+c.r,Xc-c.si),x=RE.PADX+Xc*step,y=ry(cv);
+  ov.addEventListener('mousemove',ev=>{let X=at(ev);const l=lifts();
+    if(X>LAST+0.03){const x=rx(8),y=ry(l.e8);
       S('e_hx','x1',x);S('e_hx','x2',x);S('e_hy','x2',x);S('e_hy','y1',y);S('e_hy','y2',y);
-      S('e_hdot','cx',x);S('e_hdot','cy',y);document.getElementById('e_hdot').setAttribute('fill','#E60000');
+      S('e_hdot','cx',x);S('e_hdot','cy',y);document.getElementById('e_hdot').setAttribute('fill','#00696C');
       const xl=document.getElementById('e_hxl');xl.setAttribute('x',x);xl.setAttribute('y',RE.pb+18);xl.textContent='2030';
-      const yl=document.getElementById('e_hyl');yl.setAttribute('x',RE.PADX-6);yl.setAttribute('y',y+4);yl.textContent='+'+de(cv,1);
+      const yl=document.getElementById('e_hyl');yl.setAttribute('x',RE.PADX-6);yl.setAttribute('y',y+4);yl.textContent='+'+de(l.e8,1);
       hv.style.opacity=1;
-      tip.innerHTML='<div class="h">2030<span class="b">Korridor</span></div><div class="r"><span>Korridor oben</span><span>+'+de(c.up2030,1)+' Mio €</span></div><div class="r"><span>Korridor unten</span><span>+'+de(D[LAST].ebt,1)+' Mio €</span></div><div class="r"><span>Annahme</span><span>+'+Math.round(c.r*100)+' % p.a. (kumuliert)</span></div>';
+      tip.innerHTML='<div class="h">2030<span class="b">Basis</span></div><div class="r"><span>Ergebnis-Basis</span><span>+'+de(l.e8,1)+' Mio €</span></div><div class="r"><span>Geschäftsmodelle · Effizienzen</span><span>Potenzial ↑</span></div><div class="r"><span>Maximum möglich</span><span>↑↑</span></div>';
       placeTip(tip,ev);return;}
     const rX=clamp(Math.round(X),0,LAST);const ex=Math.abs(X-rX)<0.07;if(ex)X=rX;
     const val=evEbt(X),x=RE.PADX+X*step,y=ry(val),d=D[rX];
@@ -457,28 +465,43 @@ function buildErg(){
     S('e_hdot','cx',x);S('e_hdot','cy',y);document.getElementById('e_hdot').setAttribute('fill',val>=0?'#00696C':'#E60000');
     const xl=document.getElementById('e_hxl');xl.setAttribute('x',x);xl.setAttribute('y',RE.pb+18);xl.textContent=d.y;
     const yl=document.getElementById('e_hyl');yl.setAttribute('x',RE.PADX-6);yl.setAttribute('y',y+4);yl.textContent=(ex?'':'≈')+sgn(val)+de(val,1);
-    hv.style.opacity=1;const inC=rX>=c.si,cVal=evEbt(rX)*Math.pow(1+c.r,rX-c.si);
-    tip.innerHTML='<div class="h">'+(ex?d.y:'um '+d.y)+'<span class="b">'+(d.plan?'Plan':'Ist')+'</span></div>'+(ex?'<div class="r"><span>Ergebnis (EBT)</span><span>'+mio(d.ebt)+'</span></div><div class="r"><span>Aus eigener Kraft</span><span>'+mio(d.ebt-d.foe)+'</span></div><div class="r"><span>Förderungen</span><span>+'+de(d.foe,1)+' Mio €</span></div>'+(inC?'<div class="r"><span>Korridor (Modell)</span><span>+'+de(cVal,1)+' Mio €</span></div>':''):'<div class="r"><span>EBT (Trend)</span><span>≈ '+sgn(val)+de(val,1)+' Mio €</span></div>');
+    hv.style.opacity=1;const hasL=((rX>=l.gmS?l.gm:0)+(rX>=l.effS?l.eff:0))>0;
+    tip.innerHTML='<div class="h">'+(ex?d.y:'um '+d.y)+'<span class="b">'+(d.plan?'Plan':'Ist')+'</span></div>'+(ex?'<div class="r"><span>Ergebnis (EBT)</span><span>'+mio(d.ebt)+'</span></div><div class="r"><span>Aus eigener Kraft</span><span>'+mio(d.ebt-d.foe)+'</span></div><div class="r"><span>Förderungen</span><span>+'+de(d.foe,1)+' Mio €</span></div>'+(hasL?'<div class="r"><span>Szenarien</span><span>Potenzial ↑</span></div>':''):'<div class="r"><span>EBT (Trend)</span><span>≈ '+sgn(val)+de(val,1)+' Mio €</span></div>');
     placeTip(tip,ev);});
   ov.addEventListener('mouseenter',()=>tip.classList.add('on'));
   ov.addEventListener('mouseleave',()=>{hv.style.opacity=0;tip.classList.remove('on');});
   ov.addEventListener('click',ev=>{stopPlayE();selErg(clamp(Math.round(at(ev)),0,LAST));});
-  drawFunnel();
+  drawLifts();
 }
-function drawFunnel(){
+function drawLifts(){
   const fg=document.getElementById('funnelG');if(!fg)return;fg.innerHTML='';
-  const c=corr();const ys=[];for(let y=c.si;y<=8;y++)ys.push(y);
-  const uy=ys.map(y=>evEbt(Math.min(y,7))*Math.pow(1+c.r,y-c.si));const ut=tangents(uy);
-  const steps=72,up=[],lo=[];
-  for(let k=0;k<=steps;k++){const idx=(ys.length-1)*k/steps,X=c.si+idx;up.push([rx(X),ry(evalMono(uy,ut,idx))]);lo.push([rx(X),ry(evEbt(Math.min(X,7)))]);}
-  const fillD='M'+up.map(p=>p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' L')+' L'+[...lo].reverse().map(p=>p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' L')+' Z';
-  E('path',{d:fillD,fill:'url(#korGrad)'},fg);
-  E('path',{d:'M'+up.map(p=>p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' L'),fill:'none',stroke:'#E60000','stroke-width':2.6,'stroke-dasharray':'8 5','stroke-linecap':'round','stroke-linejoin':'round'},fg);
-  E('circle',{cx:rx(8),cy:ry(c.up2030),r:5.5,fill:'#fff',stroke:'#E60000','stroke-width':3.2},fg);
-  function halo(t){t.style.paintOrder='stroke';t.setAttribute('stroke','#fff');t.setAttribute('stroke-width','3.5');return t;}
-  halo(E('text',{x:rx(8),y:ry(c.up2030)-13,'text-anchor':'end',fill:'#B30000','font-size':13,'font-weight':800},fg)).textContent='+'+de(c.up2030,1);
-  const mk=c.si+(8-c.si)*0.5;halo(E('text',{x:rx(mk),y:ry(evalMono(uy,ut,(ys.length-1)*0.5))-10,'text-anchor':'middle',fill:'#B30000','font-size':11.5,'font-weight':800},fg)).textContent='Korridor';
-  document.getElementById('ci_res').innerHTML='2030: <b>+'+de(D[LAST].ebt,1)+' bis +'+de(c.up2030,1)+' Mio €</b>';
+  const l=lifts(),S0=Math.min(l.gmS,l.effS);
+  const ergF=X=>ergAt(X),gmF=X=>ergAt(X)*(1+(X>=l.gmS-1e-9?l.gm:0)),efF=X=>ergAt(X)*(1+(X>=l.effS-1e-9?l.eff:0)),mxF=X=>ergAt(X)*(1+(X>=l.gmS-1e-9?l.gm:0)+(X>=l.effS-1e-9?l.eff:0));
+  function pts(fn,from){const o=[],st=72;for(let k=0;k<=st;k++){const X=from+(8-from)*k/st;o.push([rx(X),ry(fn(X))]);}return o;}
+  const PP=p=>p.map(q=>q[0].toFixed(1)+' '+q[1].toFixed(1)).join(' L');
+  const cGM='#00A5BC',cEF='#E0930F',cMX='#2563B5';
+  const base=pts(ergF,S0),mxp=pts(mxF,S0);
+  E('path',{d:'M'+PP(mxp)+' L'+PP([...base].reverse())+' Z',fill:'#2563B5','fill-opacity':.06},fg);
+  if(l.eff>0)E('path',{d:'M'+PP(pts(efF,l.effS)),fill:'none',stroke:cEF,'stroke-width':2.3,'stroke-dasharray':'7 5','stroke-linecap':'round','stroke-linejoin':'round'},fg);
+  if(l.gm>0)E('path',{d:'M'+PP(pts(gmF,l.gmS)),fill:'none',stroke:cGM,'stroke-width':2.3,'stroke-dasharray':'7 5','stroke-linecap':'round','stroke-linejoin':'round'},fg);
+  E('path',{d:'M'+PP(pts(mxF,S0)),fill:'none',stroke:cMX,'stroke-width':3,'stroke-dasharray':'2 5','stroke-linecap':'round','stroke-linejoin':'round'},fg);
+  const GMv=l.e8*(1+l.gm),EFv=l.e8*(1+l.eff),MXv=l.e8*(1+l.gm+l.eff);
+  if(l.eff>0)E('circle',{cx:rx(8),cy:ry(EFv),r:4.2,fill:'#fff',stroke:cEF,'stroke-width':2.8},fg);
+  if(l.gm>0)E('circle',{cx:rx(8),cy:ry(GMv),r:4.2,fill:'#fff',stroke:cGM,'stroke-width':2.8},fg);
+  E('circle',{cx:rx(8),cy:ry(MXv),r:5,fill:'#fff',stroke:cMX,'stroke-width':3.4},fg);
+  E('circle',{cx:rx(8),cy:ry(l.e8),r:4,fill:'#fff',stroke:'#00898D','stroke-width':2.6},fg);
+  const items=[{yt:ry(MXv),t:'Maximum möglich',c:cMX,bold:1}];
+  if(l.gm>0)items.push({yt:ry(GMv),t:'durch neue Geschäftsmodelle',c:cGM});
+  if(l.eff>0)items.push({yt:ry(EFv),t:'durch Effizienzsteigerungen',c:cEF});
+  items.push({yt:ry(l.e8),t:'Ergebnis +'+de(l.e8,1),c:'#0B7E82',dim:1});
+  items.forEach(o=>o.y=o.yt);items.sort((p,q)=>p.yt-q.yt);
+  const GAP=20.5;for(let k=1;k<items.length;k++){if(items[k].y-items[k-1].y<GAP)items[k].y=items[k-1].y+GAP;}
+  const lx=rx(8)+12;
+  items.forEach(o=>{const w=o.t.length*7.0+24;
+    E('line',{x1:rx(8)+1,y1:o.yt,x2:lx-1,y2:o.y,stroke:o.c,'stroke-width':1.2,'stroke-opacity':.55},fg);
+    E('rect',{x:lx,y:o.y-9.5,width:w,height:19,rx:9.5,fill:o.c,opacity:o.dim?.92:1},fg);
+    const t=E('text',{x:lx+11,y:o.y+3.8,fill:'#fff','font-size':11,'font-weight':o.bold?800:700},fg);t.textContent=o.t;});
+  document.getElementById('lift_res').innerHTML='Ergebnis-Basis 2030: <b>+'+de(l.e8,1)+' Mio €</b> · darüber das Potenzial aus Geschäftsmodellen & Effizienzen (Richtung, ohne fixe Zielwerte)';
 }
 function applyEk(){const tg=document.getElementById('e_tg'),leg=document.getElementById('e_legend'),eq=document.getElementById('e_eq');
   ['foeBand','ebitLine','lblEK','lblFoe'].forEach(id=>{const e=document.getElementById(id);if(e){e.style.transition='opacity .35s ease';e.style.opacity=ekOn?1:0;}});
@@ -486,26 +509,26 @@ function applyEk(){const tg=document.getElementById('e_tg'),leg=document.getElem
 function renderErgAll(){RE.max=ergMax();buildErg();applyEk();paintErg(e_idx,false);}
 function paintErg(i,an){
   setTL('e',i);
-  if(i===8){const c=corr();
-    T('e_year','2030');const pl=document.getElementById('e_pill');pl.textContent='Korridor';pl.className='pill kor';
-    document.getElementById('e_big').className='big is-kor';T('e_num','+'+de(c.up2030,1));T('e_word','Mio € · Korridor (Obergrenze)');
-    T('e_ins','Wachstumskorridor ab '+c.sy+', +'+Math.round(c.r*100)+' % p.a. (Jahr für Jahr kumuliert): 2030 zwischen +'+de(D[LAST].ebt,1)+' und +'+de(c.up2030,1)+' Mio €.');
-    T('e_ebt','+'+de(c.up2030,1)+' Mio €');T('e_ebit','+'+de(D[LAST].ebt,1)+' Mio €');T('e_foe','ab '+c.sy);T('e_ebitda','+'+Math.round(c.r*100)+' % p.a.');
-    moveDot('e_dot','e_halo','e_guide',rx(8),ry(c.up2030),ry(0),'#B30000','#E60000',an);return;}
-  const d=D[i];T('e_year',d.y);
+  if(i===8){const l=lifts();
+    T('e_year','2030');const pl=document.getElementById('e_pill');pl.textContent='Ergebnis-Basis';pl.className='pill plan';
+    document.getElementById('e_big').className='big is-profit';T('e_num','+'+de(l.e8,1));T('e_word','Mio € · Ergebnis-Basis');
+    T('e_ins','Ergebnis-Basis +'+de(l.e8,1)+' Mio €, das kommt no matter what. Darüber zeigen die Kurven das Potenzial aus neuen Geschäftsmodellen und Effizienzsteigerungen (Richtung, noch ohne fixe Zielwerte).');
+    setChipLabels(1);T('e_ebt','+'+de(l.e8,1)+' Mio €');T('e_ebit','Potenzial ↑');T('e_foe','Potenzial ↑');T('e_ebitda','Maximum ↑↑');
+    moveDot('e_dot','e_halo','e_guide',rx(8),ry(l.e8),ry(0),'#00696C','#00898D',an);return;}
+  const d=D[i];setChipLabels(0);T('e_year',d.y);
   const pl=document.getElementById('e_pill');pl.textContent=d.plan?'Prognose / Plan':'Ist';pl.className='pill '+(d.plan?'plan':'ist');
   const prof=d.ebt>=0;document.getElementById('e_big').className='big '+(prof?'is-profit':'is-loss');
   T('e_num',sgn(d.ebt)+de(d.ebt,1));T('e_word','Mio € '+(prof?'Gewinn':'Verlust'));T('e_ins',insErg[i]);
   T('e_ebt',mio(d.ebt));T('e_ebit',mio(d.ebt-d.foe));T('e_foe','+'+de(d.foe,1)+' Mio €');T('e_ebitda',mio(d.ebitda));
   moveDot('e_dot','e_halo','e_guide',rx(i),ry(d.ebt),ry(0),prof?'#00696C':'#E60000',prof?'#00898D':'#E60000',an);
 }
-function liveErg(s){const Xd=Math.min(s,LAST),val=evEbt(Xd),x=rx(Xd),y=ry(val),yr=clamp(Math.round(Xd),0,LAST),d=D[yr],c=corr(),inC=yr>=c.si,cVal=evEbt(yr)*Math.pow(1+c.r,yr-c.si);
+function liveErg(s){const Xd=Math.min(s,LAST),val=evEbt(Xd),x=rx(Xd),y=ry(val),yr=clamp(Math.round(Xd),0,LAST),d=D[yr],l=lifts(),hasL=((yr>=l.gmS?l.gm:0)+(yr>=l.effS?l.eff:0))>0;
   moveDot('e_dot','e_halo','e_guide',x,y,ry(0),val>=0?'#00696C':'#E60000',val>=0?'#00898D':'#E60000',false);
   document.getElementById('e_big').className='big '+(val>=0?'is-profit':'is-loss');
   T('e_num',sgn(val)+de(val,1));T('e_word','Mio € '+(val>=0?'Gewinn':'Verlust'));
   T('e_year',d.y);const pl=document.getElementById('e_pill');pl.textContent=d.plan?'Prognose / Plan':'Ist';pl.className='pill '+(d.plan?'plan':'ist');
   T('e_ins',insErg[yr]);setTLProgress('e',Xd);
-  followTip('e_htip','svgErg',x,y,RE.W,RE.H,'<div class="h">'+d.y+'<span class="b">'+(d.plan?'Plan':'Ist')+'</span></div><div class="r"><span>Ergebnis (EBT)</span><span>'+sgn(val)+de(val,1)+' Mio €</span></div><div class="r"><span>Aus eigener Kraft</span><span>'+mio(d.ebt-d.foe)+'</span></div><div class="r"><span>Förderungen</span><span>+'+de(d.foe,1)+' Mio €</span></div>'+(inC?'<div class="r"><span>Korridor (Modell)</span><span>+'+de(cVal,1)+' Mio €</span></div>':''));}
+  followTip('e_htip','svgErg',x,y,RE.W,RE.H,'<div class="h">'+d.y+'<span class="b">'+(d.plan?'Plan':'Ist')+'</span></div><div class="r"><span>Ergebnis (EBT)</span><span>'+sgn(val)+de(val,1)+' Mio €</span></div><div class="r"><span>Aus eigener Kraft</span><span>'+mio(d.ebt-d.foe)+'</span></div><div class="r"><span>Förderungen</span><span>+'+de(d.foe,1)+' Mio €</span></div>'+(hasL?'<div class="r"><span>Szenarien</span><span>Potenzial ↑</span></div>':''));}
 function selErg(i){e_idx=i;paintErg(i,true);}
 
 /* ====== MIX CHART ====== */
@@ -618,7 +641,7 @@ buildTL('e',YEARS_E,rx,RE.W,i=>{stopPlayE();selErg(i);});
 buildTL('m',['2022','2023','2024','2025','2026','2027','2028','2029'],mx,MX.W,i=>{stopPlayM();selMix(i);});
 tileToggle('e_shead','e_body','e_moretxt');tileToggle('m_shead','m_body','m_moretxt');
 buildSpeed('e_speed');buildSpeed('m_speed');
-['ci_year','ci_rate'].forEach(id=>document.getElementById(id).addEventListener('input',()=>{renderErgAll();}));
+['gm_year','gm_pct','eff_year','eff_pct'].forEach(id=>document.getElementById(id).addEventListener('input',()=>{renderErgAll();}));
 document.getElementById('e_tg').onclick=()=>{ekOn=!ekOn;applyEk();};window.__ekToggle=()=>document.getElementById('e_tg').click();
 
 const stopPlayE=makePlay('e_play',{revGet:()=>window._revER,W:RE.W,PADX:RE.PADX,maxAxis:8,endIdx:LAST,live:liveErg,settle:i=>{e_idx=i;paintErg(i,false);hideTip('e_htip');},onEnd:done=>{if(done)hideTip('e_htip');}});
