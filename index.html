@@ -17,7 +17,7 @@
   --line:#e7eaec; --sans:"Poppins","Segoe UI",system-ui,-apple-system,Helvetica,Arial,sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.45;padding:24px 16px 60px;background:#eceef0;min-height:100vh}
+body{font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.45;padding:0 0 40px;background:#eceef0;min-height:100vh}
 .bg{position:fixed;inset:0;z-index:-2;overflow:hidden;background:linear-gradient(160deg,#f6f7f9,#eef0f2)}
 .layer{position:absolute;inset:-14%;will-change:transform}
 .blob{position:absolute;border-radius:50%;filter:blur(100px);will-change:transform}
@@ -28,7 +28,7 @@ body{font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased
 @keyframes fl2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-2.5vw,-1.5vw) scale(1.05)}}
 @keyframes fl3{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-2vw,1.5vw) scale(1.08)}}
 
-.app{position:relative;max-width:1000px;margin:0 auto;background:#fff;border:7px solid var(--red);border-radius:22px;overflow:hidden;box-shadow:0 16px 54px rgba(20,30,40,.22)}
+.app{position:relative;width:100%;margin:0;background:#fff;border:none;border-radius:0;overflow:hidden;min-height:100vh}
 .head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;padding:26px 30px 0}
 .head h1{font-size:clamp(28px,4.4vw,46px);font-weight:800;letter-spacing:-1px;line-height:.98;color:var(--ink)}
 .head h1 .dot{color:var(--red)}
@@ -140,7 +140,7 @@ svg.chart{width:100%;height:auto;display:block;overflow:visible;font-family:var(
 .defs dl{margin:10px 2px 2px;display:grid;grid-template-columns:auto 1fr;gap:7px 14px;font-size:13px}
 .defs dt{font-weight:800;color:var(--ink)}.defs dd{color:var(--ink-2)}
 .foot{padding:14px 30px 20px;border-top:1px solid var(--line);font-size:11px;color:var(--muted);line-height:1.6}.foot b{color:var(--ink-2);font-weight:700}
-@media(max-width:600px){.app{border-width:5px}.stage{padding:16px 16px 22px}.head{padding:18px 16px 0}.switch{margin:14px 16px 0}.logo{height:32px}}
+@media(max-width:600px){.stage{padding:16px 16px 22px}.head{padding:18px 16px 0}.switch{margin:14px 16px 0}.logo{height:32px}}
 
 /* race views */
 .rwend{display:flex;align-items:center;gap:14px;margin-top:14px;padding:14px 18px;border-radius:14px;background:linear-gradient(90deg,#E60000,#ff3b3b);color:#fff;box-shadow:0 10px 26px rgba(230,0,0,.34);opacity:0;transform:translateY(8px) scale(.985);transition:opacity .5s ease,transform .5s ease;pointer-events:none}
