@@ -122,7 +122,10 @@ svg.chart{width:100%;height:auto;display:block;overflow:visible;font-family:var(
 
 .playrow{display:flex;align-items:center;gap:14px;margin-top:18px;flex-wrap:wrap}
 .play{width:52px;height:52px;border-radius:50%;border:none;background:var(--red);color:#fff;cursor:pointer;flex:0 0 auto;display:grid;place-items:center;box-shadow:0 9px 22px rgba(230,0,0,.34);transition:transform .15s,box-shadow .2s}
-.play:hover{transform:scale(1.07)}.play:active{transform:scale(.95)}.play svg{width:22px;height:22px}
+.play:hover{transform:scale(1.07)}
+.reset{width:44px;height:44px;border-radius:50%;border:2px solid var(--line);background:#fff;color:var(--ink-2);cursor:pointer;flex:0 0 auto;display:grid;place-items:center;transition:transform .15s,border-color .2s,color .2s}
+.reset svg{width:18px;height:18px}
+.reset:hover{transform:scale(1.07);border-color:var(--red);color:var(--red)}.play:active{transform:scale(.95)}.play svg{width:22px;height:22px}
 .speedsel{display:inline-flex;align-items:center;gap:4px;background:#f1f2f4;border-radius:999px;padding:4px 4px 4px 12px}
 .speedsel .lbl{font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-right:2px}
 .speedsel button{border:none;background:transparent;font-family:inherit;font-size:12px;font-weight:700;color:var(--ink-2);padding:6px 9px;border-radius:999px;cursor:pointer;transition:.15s}
@@ -212,7 +215,7 @@ svg.chart{width:100%;height:auto;display:block;overflow:visible;font-family:var(
 
 
       <div class="playrow">
-        <button class="play" id="e_play" aria-label="Abspielen"></button>
+        <button class="reset" id="e_reset" title="An den Anfang (Aufnahme-Start)" aria-label="An den Anfang"></button><button class="play" id="e_play" aria-label="Abspielen"></button>
         <div class="speedsel" id="e_speed"><span class="lbl">Tempo</span><button data-s="0.15">0,15×</button><button data-s="0.25">0,25×</button><button data-s="0.5">0,5×</button><button class="on" data-s="1">1×</button><button data-s="2">2×</button></div>
         <span class="pl-tx"><b>Abspielen</b> · 2022 bis 2030</span>
       </div>
@@ -269,7 +272,7 @@ svg.chart{width:100%;height:auto;display:block;overflow:visible;font-family:var(
       </div>
 
       <div class="playrow">
-        <button class="play" id="m_play" aria-label="Abspielen"></button>
+        <button class="reset" id="m_reset" title="An den Anfang (Aufnahme-Start)" aria-label="An den Anfang"></button><button class="play" id="m_play" aria-label="Abspielen"></button>
         <div class="speedsel" id="m_speed"><span class="lbl">Tempo</span><button data-s="0.15">0,15×</button><button data-s="0.25">0,25×</button><button data-s="0.5">0,5×</button><button class="on" data-s="1">1×</button><button data-s="2">2×</button></div>
         <span class="pl-tx"><b>Abspielen</b> · Print runter, Digital rauf</span>
       </div>
@@ -291,7 +294,7 @@ svg.chart{width:100%;height:auto;display:block;overflow:visible;font-family:var(
       <div class="rwhead"><div class="rwperiod" id="owa_period">2026-I</div><div class="rwsub">Netto-Monats-Reichweite (ÖWA) · 11 Online-Angebote · Quartalswerte</div><div class="rwmb" id="owa_mb"></div></div>
       <div class="chart-host"><svg class="chart" id="svgOwa" viewBox="0 0 1240 560" aria-label="ÖWA Reichweite Rennen"></svg><div class="htip" id="owa_htip"></div></div>
       <div class="rwscrub" id="owa_tl"></div>
-      <div class="playrow"><button class="play" id="owa_play" aria-label="Rennen abspielen"></button>
+      <div class="playrow"><button class="reset" id="owa_reset" title="An den Anfang (Aufnahme-Start)" aria-label="An den Anfang"></button><button class="play" id="owa_play" aria-label="Rennen abspielen"></button>
         <div class="speedsel" id="owa_speed"><span class="lbl">Tempo</span><button data-s="0.15">0,15×</button><button data-s="0.25">0,25×</button><button data-s="0.5">0,5×</button><button class="on" data-s="1">1×</button><button data-s="2">2×</button></div>
         <span class="pl-tx"><b>Rennen abspielen</b> · von links nach rechts</span></div>
       <div class="callout"><div class="ic">🏁</div><div><div class="t">So liest du das Rennen</div>
@@ -303,7 +306,7 @@ svg.chart{width:100%;height:auto;display:block;overflow:visible;font-family:var(
       <div class="rwhead"><div class="rwperiod" id="print2_period">2025</div><div class="rwsub">Print-Reichweiten in % ausgewählter Printmedien in Österreich · Jahreswerte</div><div class="rwmb" id="print2_mb"></div></div>
       <div class="chart-host"><svg class="chart" id="svgPrint2" viewBox="0 0 1240 560" aria-label="Print-Reichweite Rennen"></svg><div class="htip" id="print2_htip"></div></div>
       <div class="rwscrub" id="print2_tl"></div>
-      <div class="playrow"><button class="play" id="print2_play" aria-label="Rennen abspielen"></button>
+      <div class="playrow"><button class="reset" id="print2_reset" title="An den Anfang (Aufnahme-Start)" aria-label="An den Anfang"></button><button class="play" id="print2_play" aria-label="Rennen abspielen"></button>
         <div class="speedsel" id="print2_speed"><span class="lbl">Tempo</span><button data-s="0.15">0,15×</button><button data-s="0.25">0,25×</button><button data-s="0.5">0,5×</button><button class="on" data-s="1">1×</button><button data-s="2">2×</button></div>
         <span class="pl-tx"><b>Rennen abspielen</b> · von links nach rechts</span></div>
       <div class="callout"><div class="ic">🏁</div><div><div class="t">So liest du das Rennen</div>
@@ -316,7 +319,7 @@ svg.chart{width:100%;height:auto;display:block;overflow:visible;font-family:var(
       <div class="chart-host"><svg class="chart" id="svgCmr" viewBox="0 0 1240 560" aria-label="Cross Media Reach Rennen"></svg><div class="htip" id="cmr_htip"></div></div>
       <div class="rwend" id="cmr_end"><span class="trophy">🏆</span><div><b>MeinBezirk.at</b> ist bei Cross Media Reach die <b>unangefochtene Nr. 1</b> · fast doppelt so groß wie die Kronen Zeitung <span class="cmr-fig">(46,2 % vs. 25,2 %)</span></div></div>
       <div class="rwscrub" id="cmr_tl"></div>
-      <div class="playrow"><button class="play" id="cmr_play" aria-label="Rennen abspielen"></button>
+      <div class="playrow"><button class="reset" id="cmr_reset" title="An den Anfang (Aufnahme-Start)" aria-label="An den Anfang"></button><button class="play" id="cmr_play" aria-label="Rennen abspielen"></button>
         <div class="speedsel" id="cmr_speed"><span class="lbl">Tempo</span><button data-s="0.15">0,15×</button><button data-s="0.25">0,25×</button><button data-s="0.5">0,5×</button><button class="on" data-s="1">1×</button><button data-s="2">2×</button></div>
         <span class="pl-tx"><b>Rennen abspielen</b> · bis zum Finale 2025</span></div>
       <div class="callout"><div class="ic">🏁</div><div><div class="t">So liest du das Rennen</div>
@@ -329,7 +332,7 @@ svg.chart{width:100%;height:auto;display:block;overflow:visible;font-family:var(
       <div class="assum">Annahmen MJP lt. AR-Beschluss: -2% Anzeigen, +4% Beilagen, +15% Digital, Produktkosten +1% Druck, +2% Vertrieb, Personalkosten flach, Förderungen -5%.</div>
       <div class="chart-host"><svg class="chart" id="svgPot" viewBox="0 0 1000 470" aria-label="EBT-Entwicklung mit Upside-Potenzialen"></svg><div class="htip" id="pot_htip"></div></div>
       <div class="rwscrub" id="pot_tl"></div>
-      <div class="playrow"><button class="play" id="pot_play" aria-label="Abspielen"></button>
+      <div class="playrow"><button class="reset" id="pot_reset" title="An den Anfang (Aufnahme-Start)" aria-label="An den Anfang"></button><button class="play" id="pot_play" aria-label="Abspielen"></button>
         <div class="speedsel" id="pot_speed"><span class="lbl">Tempo</span><button data-s="0.15">0,15×</button><button data-s="0.25">0,25×</button><button data-s="0.5">0,5×</button><button class="on" data-s="1">1×</button><button data-s="2">2×</button></div>
         <span class="pl-tx"><b>Abspielen</b> · Projekte erscheinen nacheinander</span></div>
       <div class="callout"><div class="ic">💡</div><div><div class="t">Worum geht es?</div>
@@ -342,7 +345,7 @@ svg.chart{width:100%;height:auto;display:block;overflow:visible;font-family:var(
       <div class="assum">Annahmen MJP lt. AR-Beschluss: -2% Anzeigen, +4% Beilagen, +15% Digital, Produktkosten +1% Druck, +2% Vertrieb, Personalkosten flach, Förderungen -5%.</div>
       <div class="chart-host"><svg class="chart" id="svgPotMax" viewBox="0 0 1000 470" aria-label="EBT-Entwicklung mit Maximum-Potenzial"></svg><div class="htip" id="potmax_htip"></div></div>
       <div class="rwscrub" id="potmax_tl"></div>
-      <div class="playrow"><button class="play" id="potmax_play" aria-label="Abspielen"></button>
+      <div class="playrow"><button class="reset" id="potmax_reset" title="An den Anfang (Aufnahme-Start)" aria-label="An den Anfang"></button><button class="play" id="potmax_play" aria-label="Abspielen"></button>
         <div class="speedsel" id="potmax_speed"><span class="lbl">Tempo</span><button data-s="0.15">0,15×</button><button data-s="0.25">0,25×</button><button data-s="0.5">0,5×</button><button class="on" data-s="1">1×</button><button data-s="2">2×</button></div>
         <span class="pl-tx"><b>Abspielen</b> · Basis und Maximum laufen mit</span></div>
       <div class="callout"><div class="ic">📈</div><div><div class="t">Basis und Maximum</div>
@@ -585,7 +588,7 @@ function tileToggle(headId,bodyId,moreId){const h=document.getElementById(headId
   h.onclick=()=>{const open=b.classList.toggle('open');h.setAttribute('aria-expanded',open);m.textContent=open?'Weniger':'Details';};}
 
 /* play */
-let playSpeed=1;const PLAY='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>',PAUSE='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>';
+let playSpeed=1;const PLAY='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>',PAUSE='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>',REWIND='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2.4v12H6z"/><path d="M20 6v12l-9.6-6z"/></svg>';
 function makePlay(btnId,cfg){const btn=document.getElementById(btnId);btn.innerHTML=PLAY;let raf=null,playing=false;
   function setReveal(w){const r=cfg.revGet();if(r)r.setAttribute('width',w);}
   function stop(){playing=false;if(raf)cancelAnimationFrame(raf);raf=null;btn.innerHTML=PLAY;setReveal(cfg.W);if(cfg.onEnd)cfg.onEnd(true);}
@@ -596,6 +599,8 @@ function makePlay(btnId,cfg){const btn=document.getElementById(btnId);btn.innerH
       if(k<1){raf=requestAnimationFrame(fr);}else{playing=false;btn.innerHTML=PLAY;setReveal(cfg.W);cfg.settle(cfg.endIdx);if(cfg.onEnd)cfg.onEnd(true);}
     })(t0);}
   btn.onclick=()=>{if(playing){stop();return;}setReveal(cfg.PADX);start();};
+  function goStart(){playing=false;if(raf)cancelAnimationFrame(raf);raf=null;btn.innerHTML=PLAY;setReveal(cfg.PADX);if(cfg.live)cfg.live(0);if(cfg.onEnd)cfg.onEnd(true);}
+  if(cfg.resetBtn){const rb=document.getElementById(cfg.resetBtn);if(rb){rb.innerHTML=REWIND;rb.onclick=goStart;}}
   return stop;
 }
 function buildSpeed(id){document.getElementById(id).querySelectorAll('button').forEach(b=>b.onclick=()=>setSpeed(parseFloat(b.dataset.s)));}
@@ -609,8 +614,8 @@ tileToggle('e_shead','e_body','e_moretxt');tileToggle('m_shead','m_body','m_more
 buildSpeed('e_speed');buildSpeed('m_speed');
 document.getElementById('e_tg').onclick=()=>{ekOn=!ekOn;applyEk();};window.__ekToggle=()=>document.getElementById('e_tg').click();
 
-const stopPlayE=makePlay('e_play',{revGet:()=>window._revER,W:RE.W,PADX:RE.PADX,maxAxis:LAST,endIdx:LAST,live:liveErg,settle:i=>{e_idx=i;paintErg(i,false);hideTip('e_htip');},onEnd:done=>{if(done)hideTip('e_htip');}});
-const stopPlayM=makePlay('m_play',{revGet:()=>window._revMR,W:MX.W,PADX:MX.PADX,maxAxis:N-1,endIdx:N-1,live:liveMix,settle:i=>{m_idx=i;paintMix(i,false);hideTip('m_htip');},onEnd:done=>{if(done)hideTip('m_htip');}});
+const stopPlayE=makePlay('e_play',{revGet:()=>window._revER,W:RE.W,PADX:RE.PADX,maxAxis:LAST,endIdx:LAST,live:liveErg,settle:i=>{e_idx=i;paintErg(i,false);hideTip('e_htip');},onEnd:done=>{if(done)hideTip('e_htip');},resetBtn:'e_reset'});
+const stopPlayM=makePlay('m_play',{revGet:()=>window._revMR,W:MX.W,PADX:MX.PADX,maxAxis:N-1,endIdx:N-1,live:liveMix,settle:i=>{m_idx=i;paintMix(i,false);hideTip('m_htip');},onEnd:done=>{if(done)hideTip('m_htip');},resetBtn:'m_reset'});
 
 
 /* ===== RACE VIEWS (ÖWA online + Print reach) ===== */
@@ -694,6 +699,7 @@ function makeRacePlay(pre,btnId){const btn=document.getElementById(btnId);btn.in
     (function fr(ts){if(!playing)return;const k=Math.min(1,(ts-t0)/dur);rc.setPos(k*(rc.n-1));
       if(k<1)raf=requestAnimationFrame(fr);else{playing=false;btn.innerHTML=PLAY;rc.setPos(rc.n-1);}})(t0);}
   btn.onclick=()=>{if(playing){stop();return;}window['_race_'+pre].setPos(0);start();};raceStops[pre]=stop;
+  const rb=document.getElementById(pre+'_reset');if(rb){rb.innerHTML=REWIND;rb.onclick=()=>{stop();window['_race_'+pre].setPos(0);};}
 }
 buildRaceScrub('owa',RW1.cats.length);makeRace('owa',{svgId:'svgOwa',cats:RW1.cats,series:RW1.series,yMax:70,notes:RW1.notes,W:1240,H:560});
 buildRaceScrub('print2',RW2.cats.length);makeRace('print2',{svgId:'svgPrint2',cats:RW2.cats,series:RW2.series,yMax:60,notes:RW2.notes,W:1240,H:560});
