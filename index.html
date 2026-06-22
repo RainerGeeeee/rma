@@ -848,9 +848,9 @@ const RW3={cats:['2023','2023/24','2024','2024/25','2025'],notes:[{idx:3.5,label
 ]};
 /* ===== UPSIDE POTENZIAL VIEWS (EBT 2026-2030) ===== */
 function potLine(a){return 'M'+a.map(p=>p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' L');}
-const POT={svgId:'svgPot',W:1000,H:470,cats:['2026','2027','2028','2029','2030'],ebt:[1.7,1.7,2.7,4.1,4.2],yMin:1.0,yMax:4.4,yticks:[1,1.5,2,2.5,3,3.5,4],ydec:1};
-const POTMAX={svgId:'svgPotMax',W:1000,H:470,cats:['2026','2027','2028','2029','2030'],ebt:[1.7,1.7,2.7,4.1,4.2],upline:[1.7,2.3,4.8,8.5,10.7],yMin:1.0,yMax:11.2,yticks:[1,2,3,4,5,6,7,8,9,10,11],ydec:0,
-  bubbles:[{i:1,val:'0,6 Mio €',lines:['Closer-Effekt','ab HJ2'],ay:2.3,bx:0.62,by:5.6,cw:150},
+const POT={svgId:'svgPot',W:1000,H:470,cats:['2026','2027','2028','2029','2030'],ebt:[1.7,1.6,2.7,4.1,4.2],yMin:1.0,yMax:4.4,yticks:[1,1.5,2,2.5,3,3.5,4],ydec:1};
+const POTMAX={svgId:'svgPotMax',W:1000,H:470,cats:['2026','2027','2028','2029','2030'],ebt:[1.7,1.6,2.7,4.1,4.2],upline:[1.7,2.2,4.8,8.5,10.7],yMin:1.0,yMax:11.2,yticks:[1,2,3,4,5,6,7,8,9,10,11],ydec:0,
+  bubbles:[{i:1,val:'0,6 Mio €',lines:['Closer-Effekt','ab HJ2'],ay:2.2,bx:0.62,by:5.6,cw:150},
            {i:2,val:'1,5 Mio €',lines:['Flowrian: Einsparung','FTEs, Closer-Effekt'],ay:4.8,bx:1.78,by:8.4},
            {i:3,val:'2,3 Mio €',lines:['Mein Bezirk App,','Community-Projekt'],ay:4.1,bx:2.82,by:5.8},
            {i:4,val:'2,1 Mio €',lines:['Mein Bezirk App,','Community-Projekt'],ay:4.2,bx:3.82,by:7.1}]};
