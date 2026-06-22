@@ -616,8 +616,7 @@ function liveMix(s){const X=clamp(s,0,N-1),pv=evalMono(prV,prT,X),dv=evalMono(dg
   T('m_num',Math.round(pdv)+' €');T('m_year',d.y);const pl=document.getElementById('m_pill');pl.textContent=d.plan?'Prognose / Plan':'Ist';pl.className='pill '+(d.plan?'plan':'ist');
   T('m_ins',insMix[yr]);
   setTLProgress('m',X);
-  const veuro=(function(){const i=Math.min(Math.floor(X),N-1),fr=X-i,j=Math.min(i+1,N-1);return vtEUR[i]+(vtEUR[j]-vtEUR[i])*fr;})();
-  followTip('m_htip','svgMix',x,my(dv),MX.W,MX.H,'<div class="h">'+d.y+'<span class="b">'+(d.plan?'Plan':'Ist')+'</span></div><div class="r"><span><i style="background:#5E6A72"></i>Print</span><span>'+de(pv,1)+' Mio €</span></div><div class="r"><span><i style="background:#00898D"></i>Digital</span><span>'+de(dv,1)+' Mio €</span></div><div class="r"><span><i style="background:#2E78C7"></i>Vertriebserlöse</span><span>'+de(veuro,2)+' €</span></div>');}
+  hideTip('m_htip');}
 function selMix(i){m_idx=i;paintMix(i,true);}
 
 /* ====== ERLÖSKURVE PRINT (Print-Erlös + Alternative Erlöskurve) ====== */
