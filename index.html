@@ -17,7 +17,7 @@
   --line:#e7eaec; --sans:"Poppins","Segoe UI",system-ui,-apple-system,Helvetica,Arial,sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.45;padding:0 0 40px;background:#eceef0;min-height:100vh}
+body{font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.45;padding:24px 16px 60px;background:#eceef0;min-height:100vh}
 .bg{position:fixed;inset:0;z-index:-2;overflow:hidden;background:linear-gradient(160deg,#f6f7f9,#eef0f2)}
 .layer{position:absolute;inset:-14%;will-change:transform}
 .blob{position:absolute;border-radius:50%;filter:blur(100px);will-change:transform}
@@ -28,7 +28,7 @@ body{font-family:var(--sans);color:var(--ink);-webkit-font-smoothing:antialiased
 @keyframes fl2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-2.5vw,-1.5vw) scale(1.05)}}
 @keyframes fl3{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-2vw,1.5vw) scale(1.08)}}
 
-.app{position:relative;width:100%;margin:0;background:#fff;border:none;border-radius:0;overflow:hidden;min-height:100vh}
+.app{position:relative;max-width:1000px;margin:0 auto;background:#fff;border:7px solid var(--red);border-radius:22px;overflow:hidden;box-shadow:0 16px 54px rgba(20,30,40,.22)}
 .head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;padding:26px 30px 0}
 .head h1{font-size:clamp(28px,4.4vw,46px);font-weight:800;letter-spacing:-1px;line-height:.98;color:var(--ink)}
 .head h1 .dot{color:var(--red)}
@@ -145,7 +145,7 @@ svg.chart{width:100%;height:auto;display:block;overflow:visible;font-family:var(
 .defs dl{margin:10px 2px 2px;display:grid;grid-template-columns:auto 1fr;gap:7px 14px;font-size:13px}
 .defs dt{font-weight:800;color:var(--ink)}.defs dd{color:var(--ink-2)}
 .foot{padding:14px 30px 20px;border-top:1px solid var(--line);font-size:11px;color:var(--muted);line-height:1.6}.foot b{color:var(--ink-2);font-weight:700}
-@media(max-width:600px){.stage{padding:16px 16px 22px}.head{padding:18px 16px 0}.switch{margin:14px 16px 0}.logo{height:32px}}
+@media(max-width:600px){.app{border-width:5px}.stage{padding:16px 16px 22px}.head{padding:18px 16px 0}.switch{margin:14px 16px 0}.logo{height:32px}}
 
 /* race views */
 .rwend{display:flex;align-items:center;gap:14px;margin-top:14px;padding:14px 18px;border-radius:14px;background:linear-gradient(90deg,#E60000,#ff3b3b);color:#fff;box-shadow:0 10px 26px rgba(230,0,0,.34);opacity:0;transform:translateY(8px) scale(.985);transition:opacity .5s ease,transform .5s ease;pointer-events:none}
@@ -254,11 +254,11 @@ svg.chart{width:100%;height:auto;display:block;overflow:visible;font-family:var(
         </div>
       </div>
 
-      <div class="legend" style="justify-content:flex-start;gap:18px">
-        <span class="lg"><span class="sw-pr"></span>Print-Erlös (geht zurück)</span>
-        <span class="lg"><span class="sw-dg"></span>Digital-Erlös (wächst)</span>
-        <span class="lg"><span style="display:inline-block;width:24px;height:5px;border-radius:3px;background:#2E78C7"></span>Vertriebserlöse</span>
-        <span class="lg" style="margin-left:auto;color:var(--teal-dk)"><b>Digital&nbsp;×2,4</b>&nbsp;· Print&nbsp;−26&nbsp;%</span>
+      <div class="legend" style="justify-content:flex-start;gap:14px 18px">
+        <span class="lg"><span class="sw-pr"></span>Print-Erlöse (lt. MJP)</span>
+        <span class="lg"><span class="sw-dg"></span>Digital-Erlöse (lt. MJP)</span>
+        <span class="lg"><span style="display:inline-block;width:24px;height:5px;border-radius:3px;background:#2E78C7"></span>Projekterlöse</span>
+        <span class="lg"><span style="display:inline-block;width:24px;height:0;border-top:3px dashed #E60000"></span>Szenario – massiverer Anzeigenrückgang (ab 2027)</span>
       </div>
 
       <div class="chart-host">
@@ -572,14 +572,19 @@ function buildMix(){
   const Sv=sampleN(vtV,N,200).map(p=>[mx(p[0]),my(p[1])]);const lv='M'+Sv.map(q=>q[0].toFixed(1)+' '+q[1].toFixed(1)).join(' L');
   E('path',{d:lv,fill:'none',stroke:'#2E78C7','stroke-width':2.8,'stroke-linejoin':'round','stroke-linecap':'round'},g);
   D.forEach((d,i)=>{if(vtV[i]>0.05)E('circle',{cx:mx(i),cy:my(vtV[i]),r:2.6,fill:'#fff',stroke:'#2E78C7','stroke-width':2},g);});
+  {const aP=[];for(let i=ALT0;i<N;i++)aP.push([mx(i),my(altV[i])]);
+   const pP=[];for(let i=ALT0;i<N;i++)pP.push([mx(i),my(prV[i])]);
+   E('path',{d:'M'+pP.map(q=>q[0].toFixed(1)+' '+q[1].toFixed(1)).join(' L')+' L'+aP.slice().reverse().map(q=>q[0].toFixed(1)+' '+q[1].toFixed(1)).join(' L')+' Z',fill:'#E60000','fill-opacity':.06},g);
+   E('path',{d:'M'+aP.map(q=>q[0].toFixed(1)+' '+q[1].toFixed(1)).join(' L'),fill:'none',stroke:ALTC,'stroke-width':2.8,'stroke-linejoin':'round','stroke-linecap':'round','stroke-dasharray':'7 5'},g);
+   for(let i=ALT0;i<N;i++)E('circle',{cx:mx(i),cy:my(altV[i]),r:3,fill:'#fff',stroke:ALTC,'stroke-width':2},g);}
   D.forEach((d,i)=>{E('circle',{cx:mx(i),cy:my(d.print),r:3,fill:'#fff',stroke:'#5E6A72','stroke-width':2},g);E('circle',{cx:mx(i),cy:my(d.dig),r:3,fill:'#fff',stroke:'#00898D','stroke-width':2},g);});
   function halo(t,c){t.style.paintOrder='stroke';t.setAttribute('stroke','#fff');t.setAttribute('stroke-width','3.5');t.setAttribute('fill',c);return t;}
   halo(E('text',{x:mx(LAST),y:my(D[LAST].print)-12,'text-anchor':'end','font-size':12.5,'font-weight':800},g),'#5E6A72').textContent='Print '+de(D[LAST].print,1);
   halo(E('text',{x:mx(LAST),y:my(D[LAST].dig)-12,'text-anchor':'end','font-size':12.5,'font-weight':800},g),'#00696C').textContent='Digital '+de(D[LAST].dig,1);
-  halo(E('text',{x:mx(LAST),y:my(vtV[LAST])+18,'text-anchor':'end','font-size':12,'font-weight':800},g),'#2E78C7').textContent='Vertrieb '+de(vtV[LAST],1);
+  halo(E('text',{x:mx(LAST),y:my(vtV[LAST])+18,'text-anchor':'end','font-size':12,'font-weight':800},g),'#2E78C7').textContent='Projekt '+de(vtV[LAST],1);
+  halo(E('text',{x:mx(LAST),y:my(altV[N-1])+18,'text-anchor':'end','font-size':12,'font-weight':800},g),ALTC).textContent='Szenario −22 %';
   halo(E('text',{x:mx(0),y:my(D[0].print)-12,'text-anchor':'start','font-size':12,'font-weight':800},g),'#5E6A72').textContent=de(D[0].print,1);
   halo(E('text',{x:mx(0),y:my(D[0].dig)-12,'text-anchor':'start','font-size':12,'font-weight':800},g),'#00696C').textContent=de(D[0].dig,1);
-  halo(E('text',{x:mx(0),y:my(vtV[0])+16,'text-anchor':'start','font-size':11,'font-weight':800},g),'#2E78C7').textContent='Vertrieb ≈ '+de(vtEUR[0],0)+' €';
   const hv=E('g',{id:'m_hv'},svg);hv.style.opacity=0;hv.style.transition='opacity .12s';
   E('line',{id:'m_guide',x1:mx(4),y1:MX.pt-6,x2:mx(4),y2:MX.pb,stroke:'#15191b','stroke-width':1,'stroke-dasharray':'3 4','stroke-opacity':.4},hv);
   E('circle',{id:'m_dotP',cx:mx(4),cy:my(D[4].print),r:6,fill:'#fff',stroke:'#5E6A72','stroke-width':3.4},svg);
@@ -591,7 +596,7 @@ function buildMix(){
   ov.addEventListener('mousemove',ev=>{let X=at(ev);const rX=clamp(Math.round(X),0,N-1);const ex=Math.abs(X-rX)<0.07;if(ex)X=rX;
     const pv=evalMono(prV,prT,X),dv=evalMono(dgV,dgT,X),x=MX.PADX+X*step,d=D[rX];
     S('m_guide','x1',x);S('m_guide','x2',x);S('m_dotP','cx',x);S('m_dotP','cy',my(pv));S('m_dot','cx',x);S('m_dot','cy',my(dv));S('m_halo','cx',x);S('m_halo','cy',my(dv));hv.style.opacity=1;
-    tip.innerHTML='<div class="h">'+(ex?d.y:'um '+d.y)+'<span class="b">'+(d.plan?'Plan':'Ist')+'</span></div>'+(ex?'<div class="r"><span><i style="background:#5E6A72"></i>Print</span><span>'+de(d.print,1)+' Mio €</span></div><div class="r"><span><i style="background:#00898D"></i>Digital</span><span>'+de(d.dig,1)+' Mio €</span></div><div class="r"><span><i style="background:#2E78C7"></i>Vertriebserlöse</span><span>'+de(vtEUR[rX],2)+' €</span></div><div class="r"><span>Digital-Anteil</span><span>'+de(d.pD,1)+' %</span></div>':'<div class="r"><span><i style="background:#5E6A72"></i>Print</span><span>≈ '+de(pv,1)+' Mio €</span></div><div class="r"><span><i style="background:#00898D"></i>Digital</span><span>≈ '+de(dv,1)+' Mio €</span></div>');
+    tip.innerHTML='<div class="h">'+(ex?d.y:'um '+d.y)+'<span class="b">'+(d.plan?'Plan':'Ist')+'</span></div>'+(ex?'<div class="r"><span><i style="background:#5E6A72"></i>Print</span><span>'+de(d.print,1)+' Mio €</span></div><div class="r"><span><i style="background:#00898D"></i>Digital</span><span>'+de(d.dig,1)+' Mio €</span></div>'+(rX>=ALT0?'<div class="r"><span><i style="background:#E60000"></i>Szenario −22 %</span><span>'+de(altV[rX],1)+' Mio €</span></div>':'')+'<div class="r"><span><i style="background:#2E78C7"></i>Projekterlöse</span><span>'+de(vtV[rX],1)+' Mio €</span></div><div class="r"><span>Digital-Anteil</span><span>'+de(d.pD,1)+' %</span></div>':'<div class="r"><span><i style="background:#5E6A72"></i>Print</span><span>≈ '+de(pv,1)+' Mio €</span></div><div class="r"><span><i style="background:#00898D"></i>Digital</span><span>≈ '+de(dv,1)+' Mio €</span></div>');
     placeTip(tip,ev);});
   ov.addEventListener('mouseenter',()=>tip.classList.add('on'));
   ov.addEventListener('mouseleave',()=>{hv.style.opacity=0;tip.classList.remove('on');});
@@ -852,8 +857,8 @@ const POT={svgId:'svgPot',W:1000,H:470,cats:['2026','2027','2028','2029','2030']
 const POTMAX={svgId:'svgPotMax',W:1000,H:470,cats:['2026','2027','2028','2029','2030'],ebt:[1.7,1.6,2.7,4.1,4.2],upline:[1.7,2.2,4.8,8.5,10.7],yMin:1.0,yMax:11.2,yticks:[1,2,3,4,5,6,7,8,9,10,11],ydec:0,
   bubbles:[{i:1,val:'0,6 Mio €',lines:['Closer-Effekt','ab HJ2'],ay:2.2,bx:0.62,by:5.6,cw:150},
            {i:2,val:'1,5 Mio €',lines:['Flowrian: Einsparung','FTEs, Closer-Effekt'],ay:4.8,bx:1.78,by:8.4},
-           {i:3,val:'2,3 Mio €',lines:['Mein Bezirk App,','Community-Projekt'],ay:4.1,bx:2.82,by:5.8},
-           {i:4,val:'2,1 Mio €',lines:['Mein Bezirk App,','Community-Projekt'],ay:4.2,bx:3.82,by:7.1}]};
+           {i:3,val:'2,3 Mio €',lines:['Mein Bezirk App,','Community-Projekt'],ay:8.5,bx:2.82,by:5.8},
+           {i:4,val:'2,1 Mio €',lines:['Mein Bezirk App,','Community-Projekt'],ay:10.7,bx:3.82,by:7.1}]};
 function makePot(pre,cfg){
   const svg=document.getElementById(cfg.svgId);svg.innerHTML='';
   const W=cfg.W,H=cfg.H,PL=64,PR=cfg.upline?122:96,T=42,B=54,pb=H-B,pt=T,n=cfg.cats.length,yMin=cfg.yMin,yMax=cfg.yMax,yd=cfg.ydec==null?1:cfg.ydec;
